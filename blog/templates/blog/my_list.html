@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+
+
+
+{% block content %}
+
+{% for i in post %}
+<a href="{{ i.get_absolute_url }}" class="d-block">
+    {{ i.title }}
+</a>
+{% endfor %}
+
+{% endblock %}
