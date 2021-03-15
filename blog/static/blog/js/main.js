@@ -1,11 +1,14 @@
 
 
+$(document).ready(function (){
+    AOS.init();
+})
+
+
 
 const nav = document.querySelector('.navbar-nav'),
     navList = nav.querySelectorAll('li'),
     totalNavList = navList.length;
-
-console.log(totalNavList)
 
 for (let i = 0; i<totalNavList; i++) {
     const a = navList[i].querySelector('a');
