@@ -1,17 +1,105 @@
+{% extends 'blog/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{% static 'blog/css/bootstrap.css' %}">
-  <link rel="stylesheet" href="{% static 'blog/js/bootstrap.min.js' %}">
-  <link rel="stylesheet" href="{% static 'blog/fonts/fontawesome/css/font-awesome.min.css' %}">
-  <script src="{% static 'blog/js/my_jQuery.js' %}"></script>
-  <title>Document</title>
-</head>
-<body>
-  <h1>Working</h1>
-  <i class="fa fa-home"></i>
-</body>
-</html>
+{% load blog_tags %}
+
+
+{% block carousel %}
+
+<!-- Carousel -->
+<div class="row">
+  <div class="col">
+    <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="carousel-caption d-none d-md-block">
+            <h4 class="display-4">{{ carousel_titles.0 }}</h4>
+            <span class="author mr-2"><img src="/media/images/person_1.jpg" alt=""> {{ carousel_authors.0 }}</span>
+            <span class="mr-2">{{ carousel_dates.0 | date:'F d, Y' }} </span> &bullet;
+            <span class="ml-2"><span class="fa fa-comments"></span> 3</span>
+          </div>
+          <img src="{{ carousel_src.0 }}" class="d-block w-100 h-100" alt="Not available">
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-caption d-none d-md-block">
+            <h4 class="display-4">{{ carousel_titles.1 }}</h4>
+            <span class="author mr-2"><img src="/media/images/person_2.jpg" alt=""> {{ carousel_authors.1 }}</span>
+            <span class="mr-2">{{ carousel_dates.1 | date:'F d, Y' }} </span> &bullet;
+            <span class="ml-2"><span class="fa fa-comments"></span> 3</span>
+          </div>
+          <img src="{{ carousel_src.1 }}" class="d-block w-100 h-100" alt="Not available">
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-caption d-none d-md-block">
+            <h4 class="display-4">{{ carousel_titles.2 }}</h4>
+            <span class="author mr-2"><img src="/media/images/person_6.jpg" alt=""> {{ carousel_authors.2 }}</span>
+            <span class="mr-2">{{ carousel_dates.2 | date:'F d, Y' }} </span> &bullet;
+            <span class="ml-2"><span class="fa fa-comments"></span> 3</span>
+          </div>
+          <img src="{{ carousel_src.2 }}" class="d-block w-100 h-100" alt="Not available">
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+<!-- End Carousel -->
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-6">
+    <h2 class="my-4">Latest Posts</h2>
+  </div>
+</div>
+<!-- Main Content -->
+<div class="row">
+
+  {% for i in number %}
+    <div class="col-md-6">
+      <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
+        <div class="cards index-cards">
+          <div class="card-img-top">
+            <img src="{{ pub_header_img|lookup:i }}" alt="" class="img-fluid">
+          </div>
+          <div class="card-body text-center">
+            <div class="post-meta">
+              <span class="author mr-2 text-secondary"><img src="/media/images/person_1.jpg" alt="" class="img-fluid">
+                {{ pub_authors.0 }}</span>
+              <span class="mr-2 text-secondary">{{ pub_dates.0 | date:'F d, Y' }} </span> &bullet;
+              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
+            </div>
+            <h3 class="mt-2"><a href="#" class="card-title text-dark">{{ pub_titles|lookup:i }}</a></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+  {% endfor %}
+
+</div>
+
+<div class="pagination flex-row">
+  <a href="#"><i class="fa fa-chevron-left"></i></a>
+  <a href="#" class="pages">1</a>
+  <a href="#" class="pages">2</a>
+  <a href="#" class="pages">3</a>
+  <a href="#"><i class="fa fa-chevron-right"></i></a>
+</div>
+
+
+{% endblock %}

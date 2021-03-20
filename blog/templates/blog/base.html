@@ -1,4 +1,6 @@
 {% load static %}
+{% load blog_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,12 +44,13 @@
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-    
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div class="mr-auto"></div>
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link active" href="{% url 'index' %}">Home <span
+                                    class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
@@ -72,8 +75,121 @@
             </nav>
         </div>
         <div class="container">
-            {% block content %} {% endblock %}
+            {% block carousel %} {% endblock %}
+            <div class="row">
+                <div class="col-lg-8 my-4">
+                    {% block content %} {% endblock %}
+                </div>
+                <div class="col-lg-4 my-4">
+                    <h2 class="my-4 cat">Category</h2>
+                    <hr>
+                    <div class="categories">
+                        <div data-aos="fade-left" data-aos-delay="100">
+                            <a class="category-items" href="#">Software<span>(05)</span></a>
+                        </div>
+                        <div data-aos="fade-left" data-aos-delay="200">
+                            <a class="category-items" href="#">Techonlogy<span>(02)</span></a>
+                        </div>
+                        <div data-aos="fade-left" data-aos-delay="300">
+                            <a class="category-items" href="#">Lifestyle<span>(07)</span></a>
+                        </div>
+                        <div data-aos="fade-left" data-aos-delay="400">
+                            <a class="category-items" href="#">Shopping<span>(01)</span></a>
+                        </div>
+                        <div data-aos="fade-left" data-aos-delay="500">
+                            <a class="category-items" href="#">Food<span>(08)</span></a>
+                        </div>
+                    </div>
+                    <h2 class="cat">Popular Posts</h2>
+                    <hr>
+                    <div class="popular-posts">
+                        {% for i in popular %}
+                        <div class="post-content" data-aos="flip-up" data-aos-delay="500">
+                            <div class="post-image">
+                                <div>
+                                    <img src="{{ carousel_src|lookup:i }}" class="img" alt="blog1">
+                                </div>
+                                <div>
+                                    <span class="mr-2 text-secondary"><i class="fa fa-calendar mr-2 mt-2"></i>{{ carousel_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
+                                    <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>                      
+                                </div>
+                            </div>
+                            <div class="pop-title">
+                                <a href="#">{{ carousel_titles|lookup:i }}</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <h2 class="cat">Newsletter</h2>
+                    <hr>
+                    <div class="newsletter">
+                        <input type="text" class="input-group mb-2 text-center sub-inp" placeholder="Email"
+                            data-aos="fade-down" data-aos-delay="300">
+                        <a href="#" class="btn btn-info sub-but" data-aos="fade-up" data-aos-delay="300">Subscribe</a>
+                    </div>
+                    <h2 class="cat">Popular Tags</h2>
+                    <hr>
+                    <div class="popular-tags">
+                        <span class="tag" data-aos="flip-up" data-aos-delay="100">python</span>
+                        <span class="tag" data-aos="flip-up" data-aos-delay="200">django</span>
+                        <span class="tag" data-aos="flip-up" data-aos-delay="300">travel</span>
+                        <span class="tag" data-aos="flip-up" data-aos-delay="400">illustration</span>
+                        <span class="tag" data-aos="flip-up" data-aos-delay="500">design</span>
+                        <span class="tag" data-aos="flip-up" data-aos-delay="600">lifestyle</span>
+                        <span class="tag" data-aos="flip-up" data-aos-delay="700">love</span>
+                        <span class="tag" data-aos="flip-up" data-aos-delay="800">project</span>
+                    </div>
+                </div>
+            </div>
         </div>
+        <footer class="site-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4" data-aos="fade-right" data-aos-delay="200">
+                        <h3>About Us</h3>
+                        <p class="mb-4">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia atque nemo ad modi
+                            officiis iure, autem nulla tenetur repellendus </p>
+                    </div>
+                    <div class="col-md-4" data-aos="fade-down" data-aos-delay="200">
+                        <h3>Newsletter</h3>
+                        <p>Stay update with our latest</p>
+                        <form action="#" class="form-inline">
+                            <div class="col-pl">
+                                <div class="input-group pr-5">
+                                    <input type="text" class="form-control" placeholder="Email">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <a href="#"><i class="fa fa-arrow-right"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4" data-aos="fade-left" data-aos-delay="200">
+                        <h3>Follow Us</h3>
+                        <p>Let us be social</p>
+                        <ul class="list-unstyled footer-social">
+                            <li><a href="https://github.com/TomiwaJoseph" target="_blank"><span
+                                        class="fa fa-github"></span> GitHub</a></li>
+                            <li><a href="#"><span class="fa fa-twitter"></span> Twitter</a></li>
+                            <li><a href="#"><span class="fa fa-facebook"></span> Facebook</a></li>
+                            <li><a href="#"><span class="fa fa-instagram"></span> Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="move-up">
+                    <span><i class="fa fa-arrow-circle-up fa-2x"></i></span>
+                </div>
+                <div class="rights">
+                    <h4 class="text-center">
+                        Copyright ©2021 All rights reserved | made by
+                        <a href="https://github.com/TomiwaJoseph" target="_blank">Tomiwa Joseph</a>
+                    </h4>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script src="{% static 'blog/js/my_jQuery.js' %}"></script>
