@@ -1,6 +1,6 @@
-{% extends 'blog/base.html' %}
+{% extends 'main/base.html' %}
 {% load static %}
-{% load blog_tags %}
+{% load main_tags %}
 
 
 {% block carousel %}
@@ -17,7 +17,7 @@
       <div class="carousel-inner">
         <div class="carousel-item active">
           <div class="carousel-caption d-none d-md-block">
-            <h4 class="display-4">{{ carousel_titles.0 }}</h4>
+            <h4 class="display-4"><a class="caro-title" href="{% url 'blog_detail' carou_year.0 carou_month.0 carou_day.0 carou_slug.0 %}">{{ carousel_titles.0 }}</a></h4>
             <span class="author mr-2"><img src="/media/images/person_1.jpg" alt=""> {{ carousel_authors.0 }}</span>
             <span class="mr-2">{{ carousel_dates.0 | date:'F d, Y' }} </span> &bullet;
             <span class="ml-2"><span class="fa fa-comments"></span> 3</span>
@@ -26,7 +26,7 @@
         </div>
         <div class="carousel-item">
           <div class="carousel-caption d-none d-md-block">
-            <h4 class="display-4">{{ carousel_titles.1 }}</h4>
+            <h4 class="display-4"><a class="caro-title" href="{% url 'blog_detail' carou_year.1 carou_month.1 carou_day.1 carou_slug.1 %}">{{ carousel_titles.1 }}</a></h4>
             <span class="author mr-2"><img src="/media/images/person_2.jpg" alt=""> {{ carousel_authors.1 }}</span>
             <span class="mr-2">{{ carousel_dates.1 | date:'F d, Y' }} </span> &bullet;
             <span class="ml-2"><span class="fa fa-comments"></span> 3</span>
@@ -35,7 +35,7 @@
         </div>
         <div class="carousel-item">
           <div class="carousel-caption d-none d-md-block">
-            <h4 class="display-4">{{ carousel_titles.2 }}</h4>
+            <h4 class="display-4"><a class="caro-title" href="{% url 'blog_detail' carou_year.2 carou_month.2 carou_day.2 carou_slug.2 %}">{{ carousel_titles.2 }}</a></h4>
             <span class="author mr-2"><img src="/media/images/person_6.jpg" alt=""> {{ carousel_authors.2 }}</span>
             <span class="mr-2">{{ carousel_dates.2 | date:'F d, Y' }} </span> &bullet;
             <span class="ml-2"><span class="fa fa-comments"></span> 3</span>
@@ -59,6 +59,7 @@
 
 {% endblock %}
 
+
 {% block content %}
 
 <div class="row">
@@ -70,25 +71,26 @@
 <div class="row">
 
   {% for i in number %}
-    <div class="col-md-6">
-      <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
-        <div class="cards index-cards">
-          <div class="card-img-top">
-            <img src="{{ pub_header_img|lookup:i }}" alt="" class="img-fluid">
+  <div class="col-md-6">
+    <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
+      <div class="cards index-cards">
+        <div class="card-img-top">
+          <img src="{{ pub_header_img|lookup:i }}" alt="" class="img-fluid">
+        </div>
+        <div class="card-body text-center">
+          <div class="post-meta">
+            <span class="author mr-2 text-secondary"><img class="mr-1" src="/media/images/person_1.jpg" alt="" class="img-fluid">
+              {{ pub_authors|lookup:i }}</span>
+            <span class="mr-2 text-secondary">{{ pub_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
+            <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
           </div>
-          <div class="card-body text-center">
-            <div class="post-meta">
-              <span class="author mr-2 text-secondary"><img src="/media/images/person_1.jpg" alt="" class="img-fluid">
-                {{ pub_authors.0 }}</span>
-              <span class="mr-2 text-secondary">{{ pub_dates.0 | date:'F d, Y' }} </span> &bullet;
-              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
-            </div>
-            <h3 class="mt-2"><a href="#" class="card-title text-dark">{{ pub_titles|lookup:i }}</a></h3>
-          </div>
+          <h3 class="mt-2"><a href="{% url 'blog_detail' pub_year|lookup:i pub_month|lookup:i pub_day|lookup:i pub_slug|lookup:i %}"
+              class="card-title text-dark">{{ pub_titles|lookup:i }}</a></h3>
         </div>
       </div>
     </div>
-    <hr>
+  </div>
+  <hr>
   {% endfor %}
 
 </div>

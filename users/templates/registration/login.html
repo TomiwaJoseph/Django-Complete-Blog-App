@@ -1,17 +1,25 @@
-{% extends "safe/base.html" %}
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Blog_It | Log In{% endblock %}
+
 
 {% block content %}
 
-<h1>Login</h1>
-
-<div class="form-group">
+<div class="content-section mt-4">
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-secondary">Login</button>
+        {{ form|crispy }}
+        <div class="form-group">
+            <button class="btn btn-outline-info log" type="submit">Login</button>
+        </div>
     </form>
+    <div class="py-3">
+        <small class="text-muted">
+            Don't Have An Account? <a class="ml-2 category" href="{% url 'register' %}">Sign Up</a>
+        </small>
+    </div>
 </div>
-
 
 
 {% endblock content %}

@@ -1,5 +1,5 @@
 {% load static %}
-{% load blog_tags %}
+{% load main_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,10 +7,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'blog/css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'blog/fonts/fontawesome/css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'blog/css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'main/fonts/fontawesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/aos.css' %}">
     <title>
         {% block title %} Blog_It {% endblock %}
     </title>
@@ -28,8 +28,9 @@
                         <a href="#"><span class="fa fa-youtube-play"></span></a>
                     </div>
                     <div class="col-3">
-                        <form class="form-inline my-2 my-md-0 search_it">
-                            <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                        <form action="{% url 'search_it' %}" class="form-inline my-2 my-md-0 search_it" method="POST">
+                            {% csrf_token %}
+                            <input class="form-control" type="text" placeholder="Search" aria-label="Search" name="search_input">
                         </form>
                     </div>
                 </div>
@@ -53,7 +54,8 @@
                                     class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link" href="{% url 'compose' %}" tabindex="-1" aria-disabled="true">Compose
+                                +</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-toggle="dropdown"
@@ -65,16 +67,31 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">About</a>
+                            <a class="nav-link" href="{% url 'about' %}" tabindex="-1" aria-disabled="true">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">Contact</a>
+                            <a class="nav-link" href="{% url 'contact' %}" tabindex="-1"
+                                aria-disabled="true">Contact</a>
                         </li>
+                        {% if not user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown09" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">In/Up</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdown09">
+                                <a class="dropdown-item" href="{% url 'login' %}">Log In</a>
+                                <a class="dropdown-item" href="{% url 'register' %}">Sign Up</a>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}" tabindex="-1" aria-disabled="true">Logout</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </nav>
         </div>
-        <div class="container">
+        <div class="container mt-3">
             {% block carousel %} {% endblock %}
             <div class="row">
                 <div class="col-lg-8 my-4">
@@ -85,19 +102,19 @@
                     <hr>
                     <div class="categories">
                         <div data-aos="fade-left" data-aos-delay="100">
-                            <a class="category-items" href="#">Software<span>(05)</span></a>
+                            <a class="category-items" href="{% url 'category_finder' all_cat_name.0 %}">{{ all_cat_name.0|capfirst }}<span>({{length.0}})</span></a>
                         </div>
                         <div data-aos="fade-left" data-aos-delay="200">
-                            <a class="category-items" href="#">Techonlogy<span>(02)</span></a>
+                            <a class="category-items" href="{% url 'category_finder' all_cat_name.1 %}">{{ all_cat_name.1|capfirst }}<span>({{length.1}})</span></a>
                         </div>
                         <div data-aos="fade-left" data-aos-delay="300">
-                            <a class="category-items" href="#">Lifestyle<span>(07)</span></a>
+                            <a class="category-items" href="{% url 'category_finder' all_cat_name.2 %}">{{ all_cat_name.2|capfirst }}<span>({{length.2}})</span></a>
                         </div>
                         <div data-aos="fade-left" data-aos-delay="400">
-                            <a class="category-items" href="#">Shopping<span>(01)</span></a>
+                            <a class="category-items" href="{% url 'category_finder' all_cat_name.3 %}">{{ all_cat_name.3|capfirst }}<span>({{length.3}})</span></a>
                         </div>
                         <div data-aos="fade-left" data-aos-delay="500">
-                            <a class="category-items" href="#">Food<span>(08)</span></a>
+                            <a class="category-items" href="{% url 'category_finder' all_cat_name.4 %}">{{ all_cat_name.4|capfirst }}<span>({{length.4}})</span></a>
                         </div>
                     </div>
                     <h2 class="cat">Popular Posts</h2>
@@ -110,8 +127,10 @@
                                     <img src="{{ carousel_src|lookup:i }}" class="img" alt="blog1">
                                 </div>
                                 <div>
-                                    <span class="mr-2 text-secondary"><i class="fa fa-calendar mr-2 mt-2"></i>{{ carousel_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
-                                    <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>                      
+                                    <span class="mr-2 text-secondary"><i
+                                            class="fa fa-calendar mr-2 mt-2"></i>{{ carousel_dates|lookup:i | date:'F d, Y' }}
+                                    </span> &bullet;
+                                    <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
                                 </div>
                             </div>
                             <div class="pop-title">
@@ -123,9 +142,13 @@
                     <h2 class="cat">Newsletter</h2>
                     <hr>
                     <div class="newsletter">
-                        <input type="text" class="input-group mb-2 text-center sub-inp" placeholder="Email"
-                            data-aos="fade-down" data-aos-delay="300">
-                        <a href="#" class="btn btn-info sub-but" data-aos="fade-up" data-aos-delay="300">Subscribe</a>
+                        <form action="{% url 'newsletter' %}" method="post">
+                            {% csrf_token %}
+                            <input type="text" class="input-group mb-2 text-center sub-inp" placeholder="Email"
+                                data-aos="fade-down" data-aos-delay="300" name='email'>
+                            <button type="submit" class="btn btn-info sub-but" data-aos="fade-up"
+                                data-aos-delay="300">Subscribe</button type="submit">
+                        </form>
                     </div>
                     <h2 class="cat">Popular Tags</h2>
                     <hr>
@@ -157,7 +180,7 @@
                         <form action="#" class="form-inline">
                             <div class="col-pl">
                                 <div class="input-group pr-5">
-                                    <input type="text" class="form-control" placeholder="Email">
+                                    <input type="text" class="form-control news" placeholder="Email">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text">
                                             <a href="#"><i class="fa fa-arrow-right"></i></a>
@@ -192,10 +215,10 @@
         </footer>
     </div>
 
-    <script src="{% static 'blog/js/my_jQuery.js' %}"></script>
-    <script src="{% static 'blog/js/main.js' %}"></script>
-    <script src="{% static 'blog/js/aos.js' %}"></script>
-    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'main/js/my_jQuery.js' %}"></script>
+    <script src="{% static 'main/js/main.js' %}"></script>
+    <script src="{% static 'main/js/aos.js' %}"></script>
+    <script src="{% static 'main/js/bootstrap.min.js' %}"></script>
 
 
 </body>

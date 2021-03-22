@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}Blog_It | Compose{% endblock %}
+
+
+{% block content %}
+
+<h3 class="mb-5">Compose</h3>
+
+<form method="post" class="comp_form">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="form-group">
+        <button class="btn btn-info comp" type="submit">Save</button>
+    </div>
+</form>
+
+{% endblock %}
