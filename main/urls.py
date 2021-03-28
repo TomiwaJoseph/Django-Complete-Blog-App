@@ -15,4 +15,5 @@ urlpatterns = [
     path('newsletter_sub/', views.newsletter, name='newsletter'),
     path('compose/', ComposeBlogView.as_view(), name='compose'),
     path('archive/<slug:day>/', views.archive, name='archive'),
+    path('comment/', views.comment, name='comment'),
 ]
