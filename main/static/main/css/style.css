@@ -220,7 +220,7 @@ nav .nav-item{
 }
 
 .blog-content-body p{
-    line-height: 40px;
+    line-height: 35px;
     /* text-align: justify; */
 }
 .com{
@@ -258,11 +258,9 @@ nav .nav-item{
 .news-info{
     color: #1072f2;
 }
-
 .comp_form{
     width: 90%;
 }
-
 
 
 
