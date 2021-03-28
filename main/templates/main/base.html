@@ -134,7 +134,7 @@
                                 </div>
                             </div>
                             <div class="pop-title">
-                                <a href="#">{{ carousel_titles|lookup:i }}</a>
+                                <a href="{% url 'blog_detail' carou_year|lookup:i carou_month|lookup:i carou_day|lookup:i carou_slug|lookup:i %}">{{ carousel_titles|lookup:i }}</a>
                             </div>
                         </div>
                         {% endfor %}
