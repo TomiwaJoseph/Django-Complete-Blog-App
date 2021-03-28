@@ -14,4 +14,5 @@ urlpatterns = [
     path('search_results/', views.search_it, name='search_it'),
     path('newsletter_sub/', views.newsletter, name='newsletter'),
     path('compose/', ComposeBlogView.as_view(), name='compose'),
+    path('archive/<slug:day>/', views.archive, name='archive'),
 ]
