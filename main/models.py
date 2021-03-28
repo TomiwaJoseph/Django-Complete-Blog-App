@@ -52,12 +52,8 @@ class Blog(models.Model):
             self.slug = slugify(self.title)
         super(Blog, self).save(*args, **kwargs)
 
-    # def get_absolute_url(self):
-    #     return reverse('my_detail',
-    #             args=[self.publish.year,
-    #             self.publish.month,
-    #             self.publish.day,
-    #             self.slug])
+    def get_absolute_url(self):
+        return reverse('index')
 
 
 
