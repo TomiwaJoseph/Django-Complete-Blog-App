@@ -102,7 +102,6 @@ def about(request):
 def blog_detail(request, year, month, day, slug):
     blog = Blog.objects.filter(slug=slug)
     header_img = []
-    all_p = []
     images_indexes = []
     a = [i.tags.all() for i in blog][0]
     tags = [a[i] for i in range(len(a))]
@@ -112,26 +111,32 @@ def blog_detail(request, year, month, day, slug):
         get_first = find_all[0]
         source = get_first.split()[2][5:-1]
         header_img.append(source)
+        category = i.category
 
         all_images = re.findall(r'<img.*?/>', i.body)
         find_p = re.findall(r'<p.*?</p>', i.body)
-        images = [find_p.index(i) for i in find_p if 'img' in i]
+        images = [find_p.index(i) for i in find_p if '<img' in i]
         images_indexes.append(images)
-        p = [i for i in find_p if 'img' not in i]
-        all_p.append(p)
-        p_indexes = [find_p.index(i) for i in find_p if 'img' not in i]
-        without_tags = [i[3:-4] for i in find_p]
-        category = i.category
+        p_indexes = [find_p.index(i) for i in find_p if '<img' not in i]
+        without = [i[3:-4] for i in find_p]
+        without_tags = [i.split()[2][5:-1] if '<img' in i else i for i in without]
 
     context = {
         'blog': blog, 'header_img': header_img,
         'carousel_src': carousel_sources, 'carousel_titles': carousel_titles,
         'carousel_authors': carousel_authors, 'carousel_dates': carousel_dates,
         'popular': range(len(carousel_authors)-1), 'category': category,
-        'all_p': all_p[0], 'images_indexes': images_indexes[0],
-        'p_indexes': p_indexes, 'content': without_tags,
+        'carou_year': carou_year, 'carou_month': carou_month,
+        'carou_day': carou_day, 'carou_slug': carou_slug,
+        'length': length, 'all_cat_name': all_cat_name,
         'tags': tags,
-        'test': ['Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium nam quas inventore, ut iure iste modi eos adipisci ad ea itaque labore earum autem nobis et numquam, minima eius. Nam eius, non unde ut aut sunt eveniet rerum repellendus porro.'],
+        'begin_': range(p_indexes[0], images_indexes[0][1]),
+        'end_': range(images_indexes[0][-1]+1, p_indexes[-1]+1),
+
+        'all_content': range(1,len(without_tags)),
+        'p_indexes': p_indexes, 'content': without_tags,
+
+        'images_indexes': images_indexes[0][1:],
     }
     return render(request, 'main/blog-single.html', context)
 
@@ -171,6 +176,7 @@ def tag_finder(request, tag):
         'tag_day': tag_day,
         'tag_slug': tag_slug,
         'tag_number': range(len(tag_titles)), 'tag': tag,
+        'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/tag_finder.html', context)
 
@@ -250,6 +256,7 @@ def search_it(request):
         'search_slug': search_slug,
         'get_search': get_search,
         'search_number': range(len(search_titles)),
+        'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/search_results.html',context)
 
@@ -265,7 +272,7 @@ class ComposeBlogView(CreateView):
     template_name = 'main/compose.html'
 
     # fields = '__all__'
-    fields = ['title', 'category', 'body',]
+    fields = ['title', 'category', 'body', 'tags']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
