@@ -1,11 +1,17 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import CreateView
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import CreateView, ListView
 from .models import Blog, Category
 import re
 from taggit.models import Tag
+from datetime import datetime
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.contrib import messages
 
 
-all_published = Blog.objects.all()
+
+
+all_published = Blog.objects.all()[:6]
 carou_pics = Blog.objects.all()
 
 carousel_sources = []
@@ -52,18 +58,13 @@ for i in all_published:
     pub_day.append(i.updated.day)
     pub_slug.append(i.slug)
 
-
 a = Category.objects.all()
 all_cat_id = [i.id for i in a]
 all_cat_name = [i.name for i in a]
 length = [len(Blog.objects.filter(category=i)) for i in all_cat_id]
 
 
-
-
-
 # Create your views here.
-
 def index(request):
     context = {
         'carousel_src': carousel_sources, 'carousel_titles': carousel_titles,
@@ -80,14 +81,32 @@ def index(request):
         'carou_day': carou_day,
         'carou_slug': carou_slug,
         'length': length, 'all_cat_name': all_cat_name,
+        'num_of_cat': range(len(all_cat_name))
         }
     return render(request, 'main/index.html', context)
     
 def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message')
+
+        send_mail(name, message, email, 
+            ['blog_owner@gmail.com'], fail_silently=False)
+        
+        messages.success(request, 'Message successfully sent!')
+        return redirect('contact')
+        
     context = {
         'carousel_src': carousel_sources, 'carousel_titles': carousel_titles,
         'carousel_authors': carousel_authors, 'carousel_dates': carousel_dates,
         'popular': range(len(carousel_authors)-1),
+        'carou_year': carou_year,
+        'carou_month': carou_month,
+        'carou_day': carou_day,
+        'carou_slug': carou_slug,
+        'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/contact.html', context)
 
@@ -96,6 +115,11 @@ def about(request):
         'carousel_src': carousel_sources, 'carousel_titles': carousel_titles,
         'carousel_authors': carousel_authors, 'carousel_dates': carousel_dates,
         'popular': range(len(carousel_authors)-1),
+        'carou_year': carou_year,
+        'carou_month': carou_month,
+        'carou_day': carou_day,
+        'carou_slug': carou_slug,
+        'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/about.html', context)
 
@@ -280,3 +304,65 @@ class ComposeBlogView(CreateView):
         context['length'] = length
         context['all_cat_name'] = all_cat_name
         return context
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+def archive(request, day):
+    if day == 'today':
+        cat = Blog.objects.filter(publish__day=timezone.now().day)
+
+    if day == 'past-7-days':
+        cat = Blog.objects.filter(
+    publish__day__lte=datetime.today().strftime('%d'), 
+    publish__day__gte=int(datetime.today().strftime('%d')) - 7)
+
+
+    if day == 'this-month':
+        cat = Blog.objects.filter(publish__month=timezone.now().month)
+
+    if day == 'this-year':
+        cat = Blog.objects.filter(publish__year=timezone.now().year)
+
+    pub_header_img = []
+    pub_titles = []
+    pub_authors = []
+    pub_dates = []
+    pub_year = []
+    pub_month = []
+    pub_day = []
+    pub_slug = []
+
+    for i in cat:
+        find_all = re.findall(r'<img.*?/>', i.body)
+        get_first = find_all[0]
+        source = get_first.split()[2][5:-1]
+        pub_header_img.append(source)
+        pub_titles.append(i.title)
+        pub_authors.append(i.author)
+        pub_dates.append(i.updated)
+        pub_year.append(i.updated.year)
+        pub_month.append(i.updated.month)
+        pub_day.append(i.updated.day)
+        pub_slug.append(i.slug)
+
+    context = {
+        'pub_header_img': pub_header_img, 'pub_titles': pub_titles,
+        'pub_authors': pub_authors, 'pub_dates': pub_dates, 'number': range(len(cat)),
+        'pub_year': pub_year,
+        'pub_month': pub_month,
+        'pub_day': pub_day,
+        'pub_slug': pub_slug,
+
+        'day': day,
+        'length': length, 'all_cat_name': all_cat_name,
+    }
+    return render(request, 'main/archive.html',context)
+
+def comment(request):
+    name = request.POST.get('name')
+    email = request.POST.get('email')
+    message = request.POST.get('message')
+    print(name, email, message)
+    return redirect('index')
