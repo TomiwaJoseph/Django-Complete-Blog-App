@@ -151,23 +151,6 @@ nav .nav-item{
     display: inline-block;
 }
 
-
-
-/* .pagination{
-    justify-content: center;
-    color: #3f4954;
-    margin: 4rem 0;
-}
-.pagination a{
-    padding: .6rem .9rem;
-    border-radius: 2rem;
-    margin: 0 .3rem;
-}
-.pagination .pages{
-    background: #3f4954;
-    color: #fff;
-} */
-
 .post-content .post-image div{
     overflow: hidden;
 }
@@ -261,8 +244,14 @@ nav .nav-item{
 .comp_form{
     width: 90%;
 }
-
-
+.archive{
+    margin-bottom: 10px;
+    color: #000;
+    width: 100%;
+    outline: none!important;
+    border-radius: 0;
+    background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+}
 
 
 
