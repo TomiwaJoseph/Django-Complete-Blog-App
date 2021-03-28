@@ -1,0 +1,51 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load main_tags %}
+
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-6">
+    {% if day == 'past-7-days' %}
+        <h2 class="my-4">Past 7 days</h2>
+    {% elif day == 'this-month' %}
+        <h2 class="my-4">This month</h2>
+    {% elif day == 'this-year' %}
+        <h2 class="my-4">This year</h2>
+    {% else %}
+        <h2 class="my-4">{{ day|capfirst }}</h2>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row">
+
+    {% for i in number %}
+    <div class="col-md-6">
+      <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
+        <div class="cards index-cards">
+          <div class="card-img-top">
+            <img src="{{ pub_header_img|lookup:i }}" alt="" class="img-fluid">
+          </div>
+          <div class="card-body text-center">
+            <div class="post-meta">
+              <span class="author mr-2 text-secondary"><img class="mr-1" src="/media/images/person_1.jpg" alt="" class="img-fluid">
+                {{ pub_authors|lookup:i }}</span>
+              <span class="mr-2 text-secondary">{{ pub_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
+              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
+            </div>
+            <h3 class="mt-2"><a href="{% url 'blog_detail' pub_year|lookup:i pub_month|lookup:i pub_day|lookup:i pub_slug|lookup:i %}"
+                class="card-title text-dark">{{ pub_titles|lookup:i }}</a></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    {% endfor %}
+
+</div>
+
+
+
+{% endblock %}
