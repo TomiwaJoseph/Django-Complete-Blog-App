@@ -7,23 +7,23 @@
 {% block content %}
 
 <div class="comment-form-wrap pt-5">
-    <form action="#" class="p-5 bg-light">
+    <form action="{% url 'contact' %}" method="POST" class="p-5 bg-light">
+        {% csrf_token %}
         <div class="form-group" data-aos="fade-right" data-aos-delay="200">
-            <label for="name">Name *</label>
-            <input required type="text" class="form-control" id="name">
+            <label for="name">Subject *</label>
+            <input required type="text" class="form-control" name="name">
         </div>
         <div class="form-group" data-aos="fade-right" data-aos-delay="300">
             <label for="email">Email *</label>
-            <input required type="email" class="form-control" id="email">
+            <input required type="email" class="form-control" name="email">
         </div>
         <div class="form-group" data-aos="fade-right" data-aos-delay="400">
             <label for="phone">Phone</label>
-            <input type="number" class="form-control" id="website">
+            <input type="number" class="form-control" name="phone">
         </div>
-
         <div class="form-group" data-aos="fade-right" data-aos-delay="500">
             <label for="message">Message *</label>
-            <textarea required name="" id="message" cols="30" rows="10" class="form-control"></textarea>
+            <textarea required name="message" cols="30" rows="10" class="form-control"></textarea>
         </div>
         <div class="form-group" data-aos="fade-up" data-aos-delay="300">
             <input type="submit" value="Send Message" class="btn btn-primary com">

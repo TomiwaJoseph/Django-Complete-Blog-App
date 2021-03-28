@@ -12,6 +12,7 @@
 
 <form method="post" class="comp_form">
     {% csrf_token %}
+    {{ form.media }}
     {{ form|crispy }}
     <div class="form-group">
         <button class="btn btn-info comp" type="submit">Save</button>
