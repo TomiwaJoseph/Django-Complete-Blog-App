@@ -128,7 +128,7 @@
                                     <span class="mr-2 text-secondary"><i
                                             class="fa fa-calendar mr-2 mt-2"></i>{{ carousel_dates|lookup:i | date:'F d, Y' }}
                                     </span> &bullet;
-                                    <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
+                                    <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ carou_comments|lookup:i }}</span>
                                 </div>
                             </div>
                             <div class="pop-title">

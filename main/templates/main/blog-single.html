@@ -14,7 +14,7 @@
           class="img-fluid">
         {{ i.author }}</span>
       <span class="mr-2 text-secondary">{{ i.created | date:'F d, Y' }} </span> &bullet;
-      <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
+      <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ comments.count }}</span>
     </div>
     <h1 class="mb-4">{{ i.title }}</h1>
     <a class="category mb-5" href="{% url 'category_finder' category %}">{{ category }}</a>
@@ -50,105 +50,33 @@
     </div>
 
     <div class="pt-5">
-      <h3 class="mb-5">6 Comments</h3>
+      {% with comments.count as total_comments %}
+        <h3 class="mb-5">{{ total_comments }} Comment{{ total_comments|pluralize }}</h3>
+      {% endwith %}
       <ul class="comment-list">
+        {% for comment in comments %}
         <li class="comment">
           <div class="vcard">
-            <img src="/media/images/person_1.jpg" alt="Image placeholder">
+            <img src="/media/images/person_2.jpg" alt="Image placeholder">
           </div>
           <div class="comment-body">
-            <h3>Jean Doe</h3>
-            <div class="meta">January 9, 2018 at 2:21pm</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam
-              impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit
-              necessitatibus, nihil?</p>
-            <p><a href="#" class="reply rounded">Reply</a></p>
+            <h3>{{ comment.name }}</h3>
+            <div class="meta">{{ comment.created | date:'F d, Y' }} at {{ comment.created | date:'P'}}</div>
+            <p>{{ comment.body }}</p>
+            <!-- <p><a href="#" class="reply rounded">Reply</a></p> -->
           </div>
         </li>
-
-        <li class="comment">
-          <div class="vcard">
-            <img src="/media/images/person_1.jpg" alt="Image placeholder">
-          </div>
-          <div class="comment-body">
-            <h3>Jean Doe</h3>
-            <div class="meta">January 9, 2018 at 2:21pm</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam
-              impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit
-              necessitatibus, nihil?</p>
-            <p><a href="#" class="reply rounded">Reply</a></p>
-          </div>
-
-          <ul class="children">
-            <li class="comment">
-              <div class="vcard">
-                <img src="/media/images/person_1.jpg" alt="Image placeholder">
-              </div>
-              <div class="comment-body">
-                <h3>Jean Doe</h3>
-                <div class="meta">January 9, 2018 at 2:21pm</div>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus,
-                  ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum
-                  impedit necessitatibus, nihil?</p>
-                <p><a href="#" class="reply rounded">Reply</a></p>
-              </div>
-
-
-              <ul class="children">
-                <li class="comment">
-                  <div class="vcard">
-                    <img src="/media/images/person_1.jpg" alt="Image placeholder">
-                  </div>
-                  <div class="comment-body">
-                    <h3>Jean Doe</h3>
-                    <div class="meta">January 9, 2018 at 2:21pm</div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus,
-                      ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum
-                      impedit necessitatibus, nihil?</p>
-                    <p><a href="#" class="reply rounded">Reply</a></p>
-                  </div>
-
-                  <ul class="children">
-                    <li class="comment">
-                      <div class="vcard">
-                        <img src="/media/images/person_1.jpg" alt="Image placeholder">
-                      </div>
-                      <div class="comment-body">
-                        <h3>Jean Doe</h3>
-                        <div class="meta">January 9, 2018 at 2:21pm</div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum
-                          necessitatibus, ipsam impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure!
-                          Quam voluptas earum impedit necessitatibus, nihil?</p>
-                        <p><a href="#" class="reply rounded">Reply</a></p>
-                      </div>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        <li class="comment">
-          <div class="vcard">
-            <img src="/media/images/person_1.jpg" alt="Image placeholder">
-          </div>
-          <div class="comment-body">
-            <h3>Jean Doe</h3>
-            <div class="meta">January 9, 2018 at 2:21pm</div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur quidem laborum necessitatibus, ipsam
-              impedit vitae autem, eum officia, fugiat saepe enim sapiente iste iure! Quam voluptas earum impedit
-              necessitatibus, nihil?</p>
-            <p><a href="#" class="reply rounded">Reply</a></p>
-          </div>
-        </li>
+        {% endfor %}
       </ul>
-      <!-- END comment-list -->
 
-      <div class="comment-form-wrap pt-5">
+
+      <!-- END comment-list -->
+      <div class="comment-form-wrap pt-2">
+        {% if user.is_authenticated %}
         <h3 class="mb-5">Leave a comment</h3>
         <form action="{% url 'comment' %}" method="POST" class="p-5 bg-light">
           {% csrf_token %}
+          <input type="hidden" name="id" value="{{ current_id }}">
           <div class="form-group">
             <label for="name">Name *</label>
             <input type="text" class="form-control" name="name" required>
@@ -165,6 +93,11 @@
             <input type="submit" value="Post Comment" class="btn btn-primary com">
           </div>
         </form>
+        {% else %}
+          <div class="col-md-12">
+            <h5 class="my-2">Please login to add a comment.</h5>
+          </div>
+        {% endif %}
       </div>
     </div>
 
