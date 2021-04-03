@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load main_tags %}
+
+
+
+{% block title %}Blog_It | Profile Page{% endblock %}
+
+
+{% block content %}
+
+
+<div class="content-section mt-4">
+    {% for i in author_details %}
+    <div class="media">
+        <img class="rounded-circle account-img" src="{{ i.profile.image.url }}">
+        <div class="media-body">
+            <h2>{{ i.username }}</h2>
+            <p class="text-secondary">{{ i.email }}</p>
+        </div>
+    </div>
+    <hr>
+    <p>{{ i.profile.about|linebreaks }}</p>
+    <hr>
+    <div class="profile-icons">
+        <a href="#"><span class="fa fa-twitter"></span></a>
+        <a href="#"><span class="fa fa-facebook"></span></a>
+        <a href="#"><span class="fa fa-instagram"></span></a>
+        <a href="#"><span class="fa fa-youtube-play"></span></a>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+      <h2 class="my-4">Recent posts...</h2>
+    </div>
+</div>
+
+<div class="row">
+
+    {% for i in search_number %}
+    <div class="col-md-6">
+      <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
+        <div class="cards index-cards">
+          <div class="card-img-top">
+            <img src="{{ search_header_img|lookup:i }}" alt="" class="img-fluid">
+          </div>
+          <div class="card-body text-center">
+            <div class="post-meta">
+              <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ search_author_pics|lookup:i }}" alt="" class="img-fluid">
+                {{ search_authors|lookup:i }}</span>
+              <span class="mr-2 text-secondary">{{ search_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
+              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ pub_comments|lookup:i }}</span>
+            </div>
+            <h3 class="mt-2"><a href="{% url 'blog_detail' search_year|lookup:i search_month|lookup:i search_day|lookup:i search_slug|lookup:i %}"
+                class="card-title text-dark">{{ search_titles|lookup:i }}</a></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    {% endfor %}
+  
+  </div>
+
+
+{% endblock %}

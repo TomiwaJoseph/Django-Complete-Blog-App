@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}Blog_It | Profile Page{% endblock %}
+
+
+{% block content %}
+
+
+<div class="content-section mt-4">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ user_form|crispy}}
+        {% if user.is_staff %}
+        {{ author_profile_form|crispy }}
+        {% else %}
+        {{ user_profile_form|crispy }}
+        {% endif %}
+        <button class="btn btn-info w-100 mb-3 com" type="submit">Update</button>
+    </form>
+</div>
+
+
+{% endblock %}
