@@ -253,9 +253,17 @@ nav .nav-item{
     background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
 }
 
-
-
-
+.account-img {
+    height: 125px;
+    width: 125px;
+    margin-right: 20px;
+    margin-bottom: 7px;
+}
+.profile-icons a{
+    margin-right: 30px;
+    font-size: 20px;
+    color: #1072f2;
+}
 
 
 

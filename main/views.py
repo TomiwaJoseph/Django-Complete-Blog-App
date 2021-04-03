@@ -12,7 +12,7 @@ from django.contrib import messages
 
 
 all_published = Blog.objects.all()[:6]
-carou_pics = Blog.objects.all()
+carou_pics = Blog.objects.all()[:3]
 
 carousel_sources = []
 carousel_titles = []
@@ -23,8 +23,9 @@ carou_month = []
 carou_day = []
 carou_slug = []
 carou_comments = []
+carou_author_pics = []
 
-for i in carou_pics[:3]:
+for i in carou_pics:
     find_all = re.findall(r'<img.*?/>', i.body)
     get_first = find_all[0]
     source = get_first.split()[2][5:-1]
@@ -37,6 +38,7 @@ for i in carou_pics[:3]:
     carou_month.append(i.updated.month)
     carou_day.append(i.updated.day)
     carou_slug.append(i.slug)
+    carou_author_pics.append(i.author.profile.image.url)
 
 pub_header_img = []
 pub_titles = []
@@ -47,6 +49,7 @@ pub_month = []
 pub_day = []
 pub_slug = []
 pub_comments = []
+pub_author_pics = []
 
 for i in all_published:
     find_all = re.findall(r'<img.*?/>', i.body)
@@ -61,6 +64,7 @@ for i in all_published:
     pub_month.append(i.updated.month)
     pub_day.append(i.updated.day)
     pub_slug.append(i.slug)
+    pub_author_pics.append(i.author.profile.image.url)
 
 
 a = Category.objects.all()
@@ -84,6 +88,8 @@ def index(request):
         'length': length, 'all_cat_name': all_cat_name,
         'carou_comments': carou_comments,
         'pub_comments': pub_comments,
+        'carou_author_pics': carou_author_pics,
+        'pub_author_pics': pub_author_pics,
         }
     return render(request, 'main/index.html', context)
     
@@ -138,6 +144,7 @@ def blog_detail(request, year, month, day, slug):
         source = get_first.split()[2][5:-1]
         header_img.append(source)
         category = i.category
+        blog_author_pic = i.author.profile.image.url
 
         all_images = re.findall(r'<img.*?/>', i.body)
         find_p = re.findall(r'<p.*?</p>', i.body)
@@ -165,6 +172,7 @@ def blog_detail(request, year, month, day, slug):
         'current_id': i.id, 'comments': comments,
         'carou_comments': carou_comments,
         'pub_comments': pub_comments,
+        'blog_author_pic': blog_author_pic,
     }
     return render(request, 'main/blog-single.html', context)
 
@@ -181,11 +189,14 @@ def tag_finder(request, tag):
     tag_month = []
     tag_day = []
     tag_slug = []
+    tag_author_pics = []
+    pub_comments = []
 
     for i in object_list:
         find_all = re.findall(r'<img.*?/>', i.body)
         get_first = find_all[0]
         source = get_first.split()[2][5:-1]
+        pub_comments.append(len(i.comments.filter(active=True)))
         tag_header_img.append(source)
         tag_titles.append(i.title)
         tag_authors.append(i.author)
@@ -194,6 +205,8 @@ def tag_finder(request, tag):
         tag_month.append(i.updated.month)
         tag_day.append(i.updated.day)
         tag_slug.append(i.slug)
+        tag_author_pics.append(i.author.profile.image.url)
+
     context = {
         'tag_titles': tag_titles,
         'tag_header_img': tag_header_img,
@@ -204,6 +217,7 @@ def tag_finder(request, tag):
         'carou_comments': carou_comments,
         'pub_comments': pub_comments,
         'tag_day': tag_day,
+        'tag_author_pics': tag_author_pics,
         'tag_slug': tag_slug,
         'tag_number': range(len(tag_titles)), 'tag': tag,
         'length': length, 'all_cat_name': all_cat_name,
@@ -223,11 +237,14 @@ def category_finder(request, tag):
     cat_month = []
     cat_day = []
     cat_slug = []
+    cat_slug_pics = []
+    pub_comments = []
 
     for i in object_list:
         find_all = re.findall(r'<img.*?/>', i.body)
         get_first = find_all[0]
         source = get_first.split()[2][5:-1]
+        pub_comments.append(len(i.comments.filter(active=True)))
         cat_header_img.append(source)
         cat_titles.append(i.title)
         cat_authors.append(i.author)
@@ -236,6 +253,8 @@ def category_finder(request, tag):
         cat_month.append(i.updated.month)
         cat_day.append(i.updated.day)
         cat_slug.append(i.slug)
+        cat_slug_pics.append(i.author.profile.image.url)
+
     context = {
         'cat_titles': cat_titles,
         'cat_header_img': cat_header_img,
@@ -245,6 +264,7 @@ def category_finder(request, tag):
         'cat_month': cat_month,
         'pub_comments': pub_comments,
         'cat_day': cat_day,
+        'cat_slug_pics': cat_slug_pics,
         'cat_slug': cat_slug,
         'cat_number': range(len(cat_titles)), 'tag': tag,
         'length': length, 'all_cat_name': all_cat_name,
@@ -263,11 +283,14 @@ def search_it(request):
     search_month = []
     search_day = []
     search_slug = []
+    search_author_pics = []
+    pub_comments = []
 
     for i in object_list:
         find_all = re.findall(r'<img.*?/>', i.body)
         get_first = find_all[0]
         source = get_first.split()[2][5:-1]
+        pub_comments.append(len(i.comments.filter(active=True)))
         search_header_img.append(source)
         search_titles.append(i.title)
         search_authors.append(i.author)
@@ -276,6 +299,8 @@ def search_it(request):
         search_month.append(i.updated.month)
         search_day.append(i.updated.day)
         search_slug.append(i.slug)
+        search_author_pics.append(i.author.profile.image.url)
+
     context = {
         'search_titles': search_titles,
         'search_header_img': search_header_img,
@@ -286,6 +311,7 @@ def search_it(request):
         'search_day': search_day,
         'search_slug': search_slug,
         'pub_comments': pub_comments,
+        'search_author_pics': search_author_pics,
         'get_search': get_search,
         'search_number': range(len(search_titles)),
         'length': length, 'all_cat_name': all_cat_name,
@@ -342,6 +368,7 @@ def archive(request, day):
     pub_month = []
     pub_day = []
     pub_slug = []
+    pub_author_pics = []
 
     for i in cat:
         find_all = re.findall(r'<img.*?/>', i.body)
@@ -355,6 +382,7 @@ def archive(request, day):
         pub_month.append(i.updated.month)
         pub_day.append(i.updated.day)
         pub_slug.append(i.slug)
+        pub_author_pics.append(i.author.profile.image.url)
 
     context = {
         'pub_header_img': pub_header_img, 'pub_titles': pub_titles,
@@ -363,7 +391,7 @@ def archive(request, day):
         'pub_month': pub_month,
         'pub_day': pub_day,
         'pub_slug': pub_slug,
-
+        'pub_author_pics': pub_author_pics,
         'pub_comments': pub_comments, 'day': day,
         'length': length, 'all_cat_name': all_cat_name,
     }
