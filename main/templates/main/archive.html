@@ -20,7 +20,7 @@
 </div>
 
 <div class="row">
-
+  {% if pub_day %}
     {% for i in number %}
     <div class="col-md-6">
       <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
@@ -43,6 +43,11 @@
     </div>
     <hr>
     {% endfor %}
+  {% else %}
+  <div class="col-md-12">
+    <h3>No post found...</h3>
+  </div>
+  {% endif %}
 
 </div>
 
