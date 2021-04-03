@@ -18,7 +18,7 @@
         <div class="carousel-item active">
           <div class="carousel-caption d-none d-md-block">
             <h4 class="display-4"><a class="caro-title" href="{% url 'blog_detail' carou_year.0 carou_month.0 carou_day.0 carou_slug.0 %}">{{ carousel_titles.0 }}</a></h4>
-            <span class="author mr-2"><img src="/media/images/person_1.jpg" alt=""> {{ carousel_authors.0 }}</span>
+            <span class="author mr-2"><img src="{{ carou_author_pics.0 }}" alt=""> {{ carousel_authors.0 }}</span>
             <span class="mr-2">{{ carousel_dates.0 | date:'F d, Y' }} </span> &bullet;
             <span class="ml-2"><span class="fa fa-comments"></span> {{ carou_comments.0 }}</span>
           </div>
@@ -27,7 +27,7 @@
         <div class="carousel-item">
           <div class="carousel-caption d-none d-md-block">
             <h4 class="display-4"><a class="caro-title" href="{% url 'blog_detail' carou_year.1 carou_month.1 carou_day.1 carou_slug.1 %}">{{ carousel_titles.1 }}</a></h4>
-            <span class="author mr-2"><img src="/media/images/person_2.jpg" alt=""> {{ carousel_authors.1 }}</span>
+            <span class="author mr-2"><img src="{{ carou_author_pics.1 }}" alt=""> {{ carousel_authors.1 }}</span>
             <span class="mr-2">{{ carousel_dates.1 | date:'F d, Y' }} </span> &bullet;
             <span class="ml-2"><span class="fa fa-comments"></span> {{ carou_comments.1 }}</span>
           </div>
@@ -36,7 +36,7 @@
         <div class="carousel-item">
           <div class="carousel-caption d-none d-md-block">
             <h4 class="display-4"><a class="caro-title" href="{% url 'blog_detail' carou_year.2 carou_month.2 carou_day.2 carou_slug.2 %}">{{ carousel_titles.2 }}</a></h4>
-            <span class="author mr-2"><img src="/media/images/person_6.jpg" alt=""> {{ carousel_authors.2 }}</span>
+            <span class="author mr-2"><img src="{{ carou_author_pics.2 }}" alt=""> {{ carousel_authors.2 }}</span>
             <span class="mr-2">{{ carousel_dates.2 | date:'F d, Y' }} </span> &bullet;
             <span class="ml-2"><span class="fa fa-comments"></span> {{ carou_comments.2 }}</span>
           </div>
@@ -79,7 +79,7 @@
         </div>
         <div class="card-body text-center">
           <div class="post-meta">
-            <span class="author mr-2 text-secondary"><img class="mr-1" src="/media/images/person_1.jpg" alt="" class="img-fluid">
+            <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ pub_author_pics|lookup:i }}" alt="" class="img-fluid">
               {{ pub_authors|lookup:i }}</span>
             <span class="mr-2 text-secondary">{{ pub_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
             <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ pub_comments|lookup:i }}</span>

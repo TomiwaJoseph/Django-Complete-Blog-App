@@ -21,10 +21,10 @@
           </div>
           <div class="card-body text-center">
             <div class="post-meta">
-              <span class="author mr-2 text-secondary"><img class="mr-1" src="/media/images/person_1.jpg" alt="" class="img-fluid">
+              <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ cat_slug_pics|lookup:i }}" alt="" class="img-fluid">
                 {{ cat_authors|lookup:i }}</span>
               <span class="mr-2 text-secondary">{{ cat_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
-              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
+              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ pub_comments|lookup:i }}</span>
             </div>
             <h3 class="mt-2"><a href="{% url 'blog_detail' cat_year|lookup:i cat_month|lookup:i cat_day|lookup:i cat_slug|lookup:i %}"
                 class="card-title text-dark">{{ cat_titles|lookup:i }}</a></h3>

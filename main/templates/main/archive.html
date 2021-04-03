@@ -30,7 +30,7 @@
           </div>
           <div class="card-body text-center">
             <div class="post-meta">
-              <span class="author mr-2 text-secondary"><img class="mr-1" src="/media/images/person_1.jpg" alt="" class="img-fluid">
+              <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ pub_author_pics|lookup:i }}" alt="" class="img-fluid">
                 {{ pub_authors|lookup:i }}</span>
               <span class="mr-2 text-secondary">{{ pub_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
               <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
