@@ -14,9 +14,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse('index')
-
 
 class Blog(models.Model):
     STATUS_CHOICES = (
@@ -56,12 +53,17 @@ class Blog(models.Model):
         return reverse('index')
 
 
+def get_default():
+    return User.objects.get(id=1)
+
 class Comment(models.Model):
     post = models.ForeignKey(Blog,
         on_delete=models.CASCADE,
         related_name='comments')
-    name = models.CharField(max_length=80)
-    email = models.EmailField()
+    commenter = models.ForeignKey(User,
+        default=get_default().id,
+        on_delete=models.CASCADE,
+        related_name='commenter_comments')
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -70,5 +72,10 @@ class Comment(models.Model):
         ordering = ('created',)
         
     def __str__(self):
-        return 'Comment by {} on {}'.format(self.name, self.post)
+        return 'Comment by {} on {}'.format(self.commenter, self.post)
 
+class NewsLetterList(models.Model):
+    email = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.email
