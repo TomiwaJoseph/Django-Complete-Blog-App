@@ -149,8 +149,11 @@ nav .nav-item{
     border-radius: 3rem;
     margin: .4rem .6rem;
     display: inline-block;
+    color: #262626;
 }
-
+.popular-tags .tag:hover{
+    color: #000;
+}
 .post-content .post-image div{
     overflow: hidden;
 }
@@ -239,7 +242,7 @@ nav .nav-item{
     color: #fff;
 }
 .news-info{
-    color: #1072f2;
+    color: #262626;
 }
 .comp_form{
     width: 90%;
@@ -252,7 +255,6 @@ nav .nav-item{
     border-radius: 0;
     background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
 }
-
 .account-img {
     height: 125px;
     width: 125px;
@@ -263,6 +265,11 @@ nav .nav-item{
     margin-right: 30px;
     font-size: 20px;
     color: #1072f2;
+}
+.posi{
+    color: #1072f2!important;
+    margin-top: 0;
+    font-size: 15px;
 }
 
 
