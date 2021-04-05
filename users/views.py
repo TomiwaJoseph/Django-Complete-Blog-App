@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from main.models import Blog
+from django.contrib.auth import views as auth_views
 
 
 # Create your views here.
@@ -17,6 +18,12 @@ class UserRegister(CreateView):
     template_name = 'registration/register.html'
     success_url = reverse_lazy('login')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['length'] = length 
+        context['all_cat_name'] = all_cat_name
+        return context
 
 def profile(request, user_):
     if user_ != request.user.username:
@@ -51,6 +58,7 @@ def edit_profile(request):
         user_profile_form = UserProfileUpdateForm(instance=request.user.profile)
     
     context = {
+        'popu_tags': popu_tags,
         'user_form': user_form,
         'author_profile_form': author_profile_form,
         'user_profile_form': user_profile_form,
@@ -110,6 +118,6 @@ def author_profile_view(request, user_):
         'search_number': range(len(search_titles)),
         'author_details': author_details,
         'length': length, 'all_cat_name': all_cat_name,
+        'popu_tags': popu_tags,
     }
     return render(request, 'users/profile_view.html', context)
-

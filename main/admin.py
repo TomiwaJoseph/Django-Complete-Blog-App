@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Blog, Category, Comment
+from .models import Blog, Category, Comment, NewsLetterList
 
 # Register your models here.
 @admin.register(Blog)
@@ -11,10 +11,11 @@ class BlogAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Category)
+admin.site.register(NewsLetterList)
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'post', 'created', 'active')
+    list_display = ('post', 'commenter', 'created', 'active')
     list_filter = ('active', 'created', 'updated')
-    search_fields = ('name', 'email', 'body')
+    search_fields = ('body',)
 

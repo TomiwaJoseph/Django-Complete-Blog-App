@@ -1,17 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, ListView
-from .models import Blog, Category, Comment
+from .models import Blog, Category, Comment, NewsLetterList
 import re
 from taggit.models import Tag
 from datetime import datetime
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib import messages
+from users.models import Profile
 
 
 
 
-all_published = Blog.objects.all()[:6]
+all_published = Blog.objects.all()[:4]
 carou_pics = Blog.objects.all()[:3]
 
 carousel_sources = []
@@ -72,6 +73,9 @@ all_cat_id = [i.id for i in a]
 all_cat_name = [i.name for i in a]
 length = [len(Blog.objects.filter(category=i)) for i in all_cat_id]
 
+blog = Blog.objects.all()
+a = [i.tags.all() for i in blog]
+popu_tags = list(set([j for i in a for j in i]))[:16]
 
 # Create your views here.
 def index(request):
@@ -80,7 +84,6 @@ def index(request):
         'carousel_authors': carousel_authors, 'carousel_dates': carousel_dates,
         'pub_header_img': pub_header_img, 'pub_titles': pub_titles,
         'pub_authors': pub_authors, 'pub_dates': pub_dates, 'number': range(len(all_published)),
-        'popular': range(len(carousel_authors)-1),
         'pub_year': pub_year,'pub_month': pub_month,
         'pub_day': pub_day, 'pub_slug': pub_slug,
         'carou_year': carou_year, 'carou_month': carou_month,
@@ -90,6 +93,7 @@ def index(request):
         'pub_comments': pub_comments,
         'carou_author_pics': carou_author_pics,
         'pub_author_pics': pub_author_pics,
+        'popu_tags': popu_tags,
         }
     return render(request, 'main/index.html', context)
     
@@ -107,18 +111,14 @@ def contact(request):
         return redirect('contact')
         
     context = {
-        'carousel_src': carousel_sources, 'carousel_titles': carousel_titles,
-        'carousel_authors': carousel_authors, 'carousel_dates': carousel_dates,
-        'popular': range(len(carousel_authors)-1),
-        'carou_year': carou_year,
-        'carou_month': carou_month,
-        'carou_day': carou_day,
-        'carou_slug': carou_slug,
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/contact.html', context)
 
 def about(request):
+    senior_writer = Profile.objects.filter(position__contains='Senior').first()
+    assist_senior_writer = Profile.objects.filter(position__contains='Assistant').first()
+    junior_writer = Profile.objects.filter(position__contains='Junior').first()
     context = {
         'carousel_src': carousel_sources, 'carousel_titles': carousel_titles,
         'carousel_authors': carousel_authors, 'carousel_dates': carousel_dates,
@@ -127,6 +127,11 @@ def about(request):
         'carou_month': carou_month,
         'carou_day': carou_day,
         'carou_slug': carou_slug,
+        'carou_comments': carou_comments,
+        'popu_tags': popu_tags,
+        'senior_writer': senior_writer,
+        'assist_senior_writer': assist_senior_writer,
+        'junior_writer': junior_writer,
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/about.html', context)
@@ -171,8 +176,9 @@ def blog_detail(request, year, month, day, slug):
         'images_indexes': images_indexes[0][1:],
         'current_id': i.id, 'comments': comments,
         'carou_comments': carou_comments,
-        'pub_comments': pub_comments,
         'blog_author_pic': blog_author_pic,
+        'popu_tags': popu_tags,
+        'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/blog-single.html', context)
 
@@ -214,13 +220,13 @@ def tag_finder(request, tag):
         'tag_dates': tag_dates,
         'tag_year': tag_year,
         'tag_month': tag_month,
-        'carou_comments': carou_comments,
         'pub_comments': pub_comments,
         'tag_day': tag_day,
         'tag_author_pics': tag_author_pics,
         'tag_slug': tag_slug,
         'tag_number': range(len(tag_titles)), 'tag': tag,
         'length': length, 'all_cat_name': all_cat_name,
+        'popu_tags': popu_tags,
     }
     return render(request, 'main/tag_finder.html', context)
 
@@ -268,6 +274,7 @@ def category_finder(request, tag):
         'cat_slug': cat_slug,
         'cat_number': range(len(cat_titles)), 'tag': tag,
         'length': length, 'all_cat_name': all_cat_name,
+        'popu_tags': popu_tags,
     }
     return render(request, 'main/category_finder.html', context)
 
@@ -315,13 +322,18 @@ def search_it(request):
         'get_search': get_search,
         'search_number': range(len(search_titles)),
         'length': length, 'all_cat_name': all_cat_name,
+        'popu_tags': popu_tags,
     }
     return render(request, 'main/search_results.html',context)
 
 def newsletter(request):
     get_search = request.POST.get('email')
+    news_ = NewsLetterList(email=get_search)
+    news_.save()
     context = {
-
+        'length': length, 'all_cat_name': all_cat_name,
+        'popu_tags': popu_tags,
+        'get_search': get_search,
     }
     return render(request, 'main/newsletter_success.html',context)
 
@@ -331,13 +343,6 @@ class ComposeBlogView(CreateView):
 
     # fields = '__all__'
     fields = ['title', 'category', 'body', 'tags']
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['length'] = length
-        context['all_cat_name'] = all_cat_name
-        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -369,11 +374,13 @@ def archive(request, day):
     pub_day = []
     pub_slug = []
     pub_author_pics = []
+    pub_comments = []
 
     for i in cat:
         find_all = re.findall(r'<img.*?/>', i.body)
         get_first = find_all[0]
         source = get_first.split()[2][5:-1]
+        pub_comments.append(len(i.comments.filter(active=True)))
         pub_header_img.append(source)
         pub_titles.append(i.title)
         pub_authors.append(i.author)
@@ -387,25 +394,23 @@ def archive(request, day):
     context = {
         'pub_header_img': pub_header_img, 'pub_titles': pub_titles,
         'pub_authors': pub_authors, 'pub_dates': pub_dates, 'number': range(len(cat)),
-        'pub_year': pub_year,
-        'pub_month': pub_month,
-        'pub_day': pub_day,
-        'pub_slug': pub_slug,
+        'pub_year': pub_year, 'pub_month': pub_month,
+        'pub_day': pub_day, 'pub_slug': pub_slug,
+        'popu_tags': popu_tags,
         'pub_author_pics': pub_author_pics,
         'pub_comments': pub_comments, 'day': day,
+        'popu_tags': popu_tags,
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/archive.html',context)
 
 def comment(request):
-    name = request.POST.get('name')
-    email = request.POST.get('email')
     message = request.POST.get('message')
     current_blog_id = request.POST.get('id')
     post = Blog.objects.filter(id=current_blog_id).first()
 
-    new_comment = Comment(post=post, name=name,
-        email=email, body=message)
+    new_comment = Comment(post=post,
+        commenter=request.user, body=message)
     new_comment.save()
 
     year = post.created.year

@@ -5,6 +5,7 @@ from PIL import Image
 # Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    position = models.CharField(default='Reader', max_length=255)
     about = models.TextField(default='Something about the author.')
     image = models.ImageField(default='blog_it.jpg', upload_to='profile_pics')
 
