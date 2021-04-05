@@ -8,41 +8,43 @@
 <div class="row">
   <div class="col-md-6">
     {% if day == 'past-7-days' %}
-        <h2 class="my-4">Past 7 days</h2>
+    <h2 class="my-4">Past 7 days</h2>
     {% elif day == 'this-month' %}
-        <h2 class="my-4">This month</h2>
+    <h2 class="my-4">This month</h2>
     {% elif day == 'this-year' %}
-        <h2 class="my-4">This year</h2>
+    <h2 class="my-4">This year</h2>
     {% else %}
-        <h2 class="my-4">{{ day|capfirst }}</h2>
+    <h2 class="my-4">{{ day|capfirst }}</h2>
     {% endif %}
   </div>
 </div>
 
 <div class="row">
   {% if pub_day %}
-    {% for i in number %}
-    <div class="col-md-6">
-      <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
-        <div class="cards index-cards">
-          <div class="card-img-top">
-            <img src="{{ pub_header_img|lookup:i }}" alt="" class="img-fluid">
+  {% for i in number %}
+  <div class="col-md-6">
+    <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
+      <div class="cards index-cards">
+        <div class="card-img-top">
+          <img src="{{ pub_header_img|lookup:i }}" alt="" class="img-fluid">
+        </div>
+        <div class="card-body text-center">
+          <div class="post-meta">
+            <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ pub_author_pics|lookup:i }}" alt=""
+                class="img-fluid">
+              {{ pub_authors|lookup:i }}</span>
+            <span class="mr-2 text-secondary">{{ pub_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
+            <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ pub_comments|lookup:i }}</span>
           </div>
-          <div class="card-body text-center">
-            <div class="post-meta">
-              <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ pub_author_pics|lookup:i }}" alt="" class="img-fluid">
-                {{ pub_authors|lookup:i }}</span>
-              <span class="mr-2 text-secondary">{{ pub_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
-              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> 3</span>
-            </div>
-            <h3 class="mt-2"><a href="{% url 'blog_detail' pub_year|lookup:i pub_month|lookup:i pub_day|lookup:i pub_slug|lookup:i %}"
-                class="card-title text-dark">{{ pub_titles|lookup:i }}</a></h3>
-          </div>
+          <h3 class="mt-2"><a
+              href="{% url 'blog_detail' pub_year|lookup:i pub_month|lookup:i pub_day|lookup:i pub_slug|lookup:i %}"
+              class="card-title text-dark">{{ pub_titles|lookup:i }}</a></h3>
         </div>
       </div>
     </div>
-    <hr>
-    {% endfor %}
+  </div>
+  <hr>
+  {% endfor %}
   {% else %}
   <div class="col-md-12">
     <h3>No post found...</h3>
@@ -52,5 +54,60 @@
 </div>
 
 
+{% endblock %}
+
+
+{% block sidebar %}
+
+<h2 class="my-4 cat">Category</h2>
+<hr>
+<div class="categories">
+  <div data-aos="fade-left" data-aos-delay="100">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.0 %}">{{ all_cat_name.0|capfirst }}<span>({{length.0}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="200">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.1 %}">{{ all_cat_name.1|capfirst }}<span>({{length.1}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="300">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.2 %}">{{ all_cat_name.2|capfirst }}<span>({{length.2}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="400">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.3 %}">{{ all_cat_name.3|capfirst }}<span>({{length.3}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="500">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.4 %}">{{ all_cat_name.4|capfirst }}<span>({{length.4}})</span></a>
+  </div>
+</div>
+<h2 class="cat">Popular Tags</h2>
+<hr>
+<div class="popular-tags">
+  <a href="{% url 'tag_finder' popu_tags.0 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="100">{{ popu_tags.0 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.1 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="200">{{ popu_tags.1 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.2 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="300">{{ popu_tags.2 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.3 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="400">{{ popu_tags.3 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.4 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="500">{{ popu_tags.4 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.5 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="600">{{ popu_tags.5 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.6 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="700">{{ popu_tags.6 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.7 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.7 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.8 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.8 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.9 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.9 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.10 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.10 }}</span></a>
+</div>
 
 {% endblock %}

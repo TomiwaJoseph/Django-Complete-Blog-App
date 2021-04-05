@@ -11,58 +11,136 @@
 
 
 <div class="content-section mt-4">
-    {% for i in author_details %}
-    <div class="media">
-        <img class="rounded-circle account-img" src="{{ i.profile.image.url }}">
-        <div class="media-body">
-            <h2>{{ i.username }}</h2>
-            <p class="text-secondary">{{ i.email }}</p>
+  {% for i in author_details %}
+  <div class="media">
+    <img class="rounded-circle account-img" src="{{ i.profile.image.url }}">
+    <div class="media-body">
+      <h2 class="mt-2">{{ i.username }}</h2>
+      <p class="text-secondary">{{ i.email }}</p>
+      <small class="posi">{{ i.profile.position }}</small>
+    </div>
+  </div>
+  <hr>
+  <p>{{ i.profile.about|linebreaks }}</p>
+  <hr>
+  <div class="profile-icons">
+    <a href="#"><span class="fa fa-twitter"></span></a>
+    <a href="#"><span class="fa fa-facebook"></span></a>
+    <a href="#"><span class="fa fa-instagram"></span></a>
+    <a href="#"><span class="fa fa-youtube-play"></span></a>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h2 class="my-4">Recent posts...</h2>
+  </div>
+</div>
+
+<div class="row">
+
+  {% for i in search_number %}
+  <div class="col-md-6">
+    <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
+      <div class="cards index-cards">
+        <div class="card-img-top">
+          <img src="{{ search_header_img|lookup:i }}" alt="" class="img-fluid">
         </div>
-    </div>
-    <hr>
-    <p>{{ i.profile.about|linebreaks }}</p>
-    <hr>
-    <div class="profile-icons">
-        <a href="#"><span class="fa fa-twitter"></span></a>
-        <a href="#"><span class="fa fa-facebook"></span></a>
-        <a href="#"><span class="fa fa-instagram"></span></a>
-        <a href="#"><span class="fa fa-youtube-play"></span></a>
-    </div>
-    {% endfor %}
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-      <h2 class="my-4">Recent posts...</h2>
-    </div>
-</div>
-
-<div class="row">
-
-    {% for i in search_number %}
-    <div class="col-md-6">
-      <div class="content-section" data-aos="zoom-in" data-aos-delay="200">
-        <div class="cards index-cards">
-          <div class="card-img-top">
-            <img src="{{ search_header_img|lookup:i }}" alt="" class="img-fluid">
+        <div class="card-body text-center">
+          <div class="post-meta">
+            <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ search_author_pics|lookup:i }}" alt=""
+                class="img-fluid">
+              {{ search_authors|lookup:i }}</span>
+            <span class="mr-2 text-secondary">{{ search_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
+            <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ pub_comments|lookup:i }}</span>
           </div>
-          <div class="card-body text-center">
-            <div class="post-meta">
-              <span class="author mr-2 text-secondary"><img class="mr-1" src="{{ search_author_pics|lookup:i }}" alt="" class="img-fluid">
-                {{ search_authors|lookup:i }}</span>
-              <span class="mr-2 text-secondary">{{ search_dates|lookup:i | date:'F d, Y' }} </span> &bullet;
-              <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ pub_comments|lookup:i }}</span>
-            </div>
-            <h3 class="mt-2"><a href="{% url 'blog_detail' search_year|lookup:i search_month|lookup:i search_day|lookup:i search_slug|lookup:i %}"
-                class="card-title text-dark">{{ search_titles|lookup:i }}</a></h3>
-          </div>
+          <h3 class="mt-2"><a
+              href="{% url 'blog_detail' search_year|lookup:i search_month|lookup:i search_day|lookup:i search_slug|lookup:i %}"
+              class="card-title text-dark">{{ search_titles|lookup:i }}</a></h3>
         </div>
       </div>
     </div>
-    <hr>
-    {% endfor %}
-  
   </div>
+  <hr>
+  {% endfor %}
 
+</div>
+
+{% endblock %}
+
+{% block sidebar %}
+
+<h2 class="my-4 cat">Category</h2>
+<hr>
+<div class="categories">
+  <div data-aos="fade-left" data-aos-delay="100">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.0 %}">{{ all_cat_name.0|capfirst }}<span>({{length.0}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="200">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.1 %}">{{ all_cat_name.1|capfirst }}<span>({{length.1}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="300">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.2 %}">{{ all_cat_name.2|capfirst }}<span>({{length.2}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="400">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.3 %}">{{ all_cat_name.3|capfirst }}<span>({{length.3}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="500">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.4 %}">{{ all_cat_name.4|capfirst }}<span>({{length.4}})</span></a>
+  </div>
+</div>
+<h2 class="cat">Newsletter</h2>
+<hr>
+<div class="newsletter">
+  <form action="{% url 'newsletter' %}" method="post">
+    {% csrf_token %}
+    <input type="text" class="input-group mb-2 text-center sub-inp" placeholder="Email" data-aos="fade-down"
+      data-aos-delay="300" name='email'>
+    <button type="submit" class="btn btn-info sub-but" data-aos="fade-up" data-aos-delay="300">Subscribe</button
+      type="submit">
+  </form>
+</div>
+<h2 class="cat">Popular Tags</h2>
+<hr>
+<div class="popular-tags">
+  <a href="{% url 'tag_finder' popu_tags.0 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="100">{{ popu_tags.0 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.1 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="200">{{ popu_tags.1 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.2 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="300">{{ popu_tags.2 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.3 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="400">{{ popu_tags.3 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.4 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="500">{{ popu_tags.4 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.5 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="600">{{ popu_tags.5 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.6 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="700">{{ popu_tags.6 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.7 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.7 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.8 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.8 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.9 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.9 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.10 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.10 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.11 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.11 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.12 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.12 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.13 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.13 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.14 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.14 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.15 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.15 }}</span></a>
+</div>
 
 {% endblock %}

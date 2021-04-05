@@ -12,7 +12,7 @@
     <div class="media">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
         <div class="media-body">
-            <h2>{{ user.username }}</h2>
+            <h2 class="mt-2">{{ user.username }}</h2>
             <p class="text-secondary">{{ user.email }}</p>
             <a class="category" href="{% url 'edit_profile' %}">Edit profile</a>
         </div>
@@ -30,5 +30,44 @@
     {% endif %}
 </div>
 
+{% endblock %}
+
+{% block sidebar %}
+
+<h2 class="my-4 cat">Category</h2>
+<hr>
+<div class="categories">
+    <div data-aos="fade-left" data-aos-delay="100">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.0 %}">{{ all_cat_name.0|capfirst }}<span>({{length.0}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="200">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.1 %}">{{ all_cat_name.1|capfirst }}<span>({{length.1}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="300">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.2 %}">{{ all_cat_name.2|capfirst }}<span>({{length.2}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="400">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.3 %}">{{ all_cat_name.3|capfirst }}<span>({{length.3}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="500">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.4 %}">{{ all_cat_name.4|capfirst }}<span>({{length.4}})</span></a>
+    </div>
+</div>
+<h2 class="cat">Newsletter</h2>
+<hr>
+<div class="newsletter">
+    <form action="{% url 'newsletter' %}" method="post">
+        {% csrf_token %}
+        <input type="text" class="input-group mb-2 text-center sub-inp" placeholder="Email" data-aos="fade-down"
+            data-aos-delay="300" name='email'>
+        <button type="submit" class="btn btn-info sub-but" data-aos="fade-up" data-aos-delay="300">Subscribe</button
+            type="submit">
+    </form>
+</div>
 
 {% endblock %}

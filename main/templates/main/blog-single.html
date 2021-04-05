@@ -6,13 +6,14 @@
 {% block content %}
 <div class="row">
   <div class="container">
-    
+
     {% for i in blog %}
     <img src="{{ header_img.0 }}" alt="" class="img-fluid mb-2">
     <div class="post-meta single-meta">
-      <span class="author mr-2 text-secondary"><img class="mr-1" src="/media/images/person_1.jpg" alt=""
-          class="img-fluid">
-        {{ i.author }}</span>
+      <a href="{% url 'view_profile' i.author %}"><span class="author mr-2 text-secondary"><img class="mr-1"
+            src="{{ blog_author_pic }}" alt="" class="img-fluid">
+          {{ i.author }}</span>
+      </a>
       <span class="mr-2 text-secondary">{{ i.created | date:'F d, Y' }} </span> &bullet;
       <span class="ml-2 text-secondary"><span class="fa fa-comments"></span> {{ comments.count }}</span>
     </div>
@@ -20,13 +21,13 @@
     <a class="category mb-5" href="{% url 'category_finder' category %}">{{ category }}</a>
     {% endfor %}
 
-    
+
     <div class="blog-content-body">
 
       {% for i in begin_ %}
-        <p>{{ content|lookup:i|safe }}</p>
+      <p>{{ content|lookup:i|safe }}</p>
       {% endfor %}
-      
+
       <div class="row">
         {% for i in images_indexes %}
         <div class="col-md-6">
@@ -34,35 +35,35 @@
         </div>
         {% endfor %}
       </div>
-      
+
       {% for i in end_ %}
-        <div class="mt-2">
-          <p>{{ content|lookup:i|safe }}</p>
-        </div>
+      <div class="mt-2">
+        <p>{{ content|lookup:i|safe }}</p>
+      </div>
       {% endfor %}
-      
+
     </div>
-    
+
     <div class="pt-5">
-      <p>Tags: <a class="category" href="{% url 'tag_finder' tags.0 %}">#{{tags.0}}</a> 
-        <a class="category" href="{% url 'tag_finder' tags.1 %}">#{{tags.1}}</a> 
+      <p>Tags: <a class="category" href="{% url 'tag_finder' tags.0 %}">#{{tags.0}}</a>
+        <a class="category" href="{% url 'tag_finder' tags.1 %}">#{{tags.1}}</a>
         <a class="category" href="{% url 'tag_finder' tags.2 %}">#{{tags.2}}</a></p>
     </div>
 
     <div class="pt-5">
       {% with comments.count as total_comments %}
-        <h3 class="mb-5">{{ total_comments }} Comment{{ total_comments|pluralize }}</h3>
+      <h3 class="mb-5">{{ total_comments }} Comment{{ total_comments|pluralize }}</h3>
       {% endwith %}
       <ul class="comment-list">
         {% for comment in comments %}
         <li class="comment">
           <div class="vcard">
-            <img src="/media/images/person_2.jpg" alt="Image placeholder">
+            <img src="{{ comment.commenter.profile.image.url }}" alt="Image placeholder">
           </div>
           <div class="comment-body">
-            <h3>{{ comment.name }}</h3>
+            <h3>{{ comment.commenter }}</h3>
             <div class="meta">{{ comment.created | date:'F d, Y' }} at {{ comment.created | date:'P'}}</div>
-            <p>{{ comment.body }}</p>
+            <p class="mt-2">{{ comment.body }}</p>
             <!-- <p><a href="#" class="reply rounded">Reply</a></p> -->
           </div>
         </li>
@@ -71,22 +72,14 @@
 
 
       <!-- END comment-list -->
-      <div class="comment-form-wrap pt-2">
+      <div class="comment-form-wrap pt-2 pb-3">
         {% if user.is_authenticated %}
-        <h3 class="mb-5">Leave a comment</h3>
+        <h3 class="mb-3">Leave a comment</h3>
         <form action="{% url 'comment' %}" method="POST" class="p-5 bg-light">
           {% csrf_token %}
           <input type="hidden" name="id" value="{{ current_id }}">
           <div class="form-group">
-            <label for="name">Name *</label>
-            <input type="text" class="form-control" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email" class="form-control" name="email" required>
-          </div>
-          <div class="form-group">
-            <label for="message">Message *</label>
+            <label for="message">Comment *</label>
             <textarea name="message" cols="30" rows="10" class="form-control" required></textarea>
           </div>
           <div class="form-group">
@@ -94,18 +87,111 @@
           </div>
         </form>
         {% else %}
-          <div class="col-md-12">
-            <h5 class="my-2">Please login to add a comment.</h5>
-          </div>
+        <h3 class="my-2">Please login to add a comment.</h3>
         {% endif %}
       </div>
     </div>
-
   </div>
-
 </div>
 
+{% endblock %}
 
+{% block sidebar %}
 
+<h2 class="my-4 cat">Category</h2>
+<hr>
+<div class="categories">
+  <div data-aos="fade-left" data-aos-delay="100">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.0 %}">{{ all_cat_name.0|capfirst }}<span>({{length.0}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="200">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.1 %}">{{ all_cat_name.1|capfirst }}<span>({{length.1}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="300">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.2 %}">{{ all_cat_name.2|capfirst }}<span>({{length.2}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="400">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.3 %}">{{ all_cat_name.3|capfirst }}<span>({{length.3}})</span></a>
+  </div>
+  <div data-aos="fade-left" data-aos-delay="500">
+    <a class="category-items"
+      href="{% url 'category_finder' all_cat_name.4 %}">{{ all_cat_name.4|capfirst }}<span>({{length.4}})</span></a>
+  </div>
+</div>
+<h2 class="cat">Popular Posts</h2>
+<hr>
+<div class="popular-posts">
+  {% for i in popular %}
+  <div class="post-content" data-aos="flip-up" data-aos-delay="500">
+    <div class="post-image">
+      <div>
+        <img src="{{ carousel_src|lookup:i }}" class="img" alt="blog1">
+      </div>
+      <div>
+        <span class="mr-2 text-secondary"><i
+            class="fa fa-calendar mr-2 mt-2"></i>{{ carousel_dates|lookup:i | date:'F d, Y' }}
+        </span> &bullet;
+        <span class="ml-2 text-secondary"><span class="fa fa-comments"></span>
+          {{ carou_comments|lookup:i }}</span>
+      </div>
+    </div>
+    <div class="pop-title">
+      <a
+        href="{% url 'blog_detail' carou_year|lookup:i carou_month|lookup:i carou_day|lookup:i carou_slug|lookup:i %}">{{ carousel_titles|lookup:i }}</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<h2 class="cat">Newsletter</h2>
+<hr>
+<div class="newsletter">
+  <form action="{% url 'newsletter' %}" method="post">
+    {% csrf_token %}
+    <input type="text" class="input-group mb-2 text-center sub-inp" placeholder="Email" data-aos="fade-down"
+      data-aos-delay="300" name='email'>
+    <button type="submit" class="btn btn-info sub-but" data-aos="fade-up" data-aos-delay="300">Subscribe</button
+      type="submit">
+  </form>
+</div>
+<h2 class="cat">Popular Tags</h2>
+<hr>
+<div class="popular-tags">
+  <a href="{% url 'tag_finder' popu_tags.0 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="100">{{ popu_tags.0 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.1 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="200">{{ popu_tags.1 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.2 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="300">{{ popu_tags.2 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.3 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="400">{{ popu_tags.3 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.4 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="500">{{ popu_tags.4 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.5 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="600">{{ popu_tags.5 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.6 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="700">{{ popu_tags.6 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.7 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.7 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.8 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.8 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.9 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.9 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.10 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.10 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.11 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.11 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.12 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.12 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.13 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.13 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.14 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.14 }}</span></a>
+  <a href="{% url 'tag_finder' popu_tags.15 %}"><span class="tag" data-aos="flip-up"
+      data-aos-delay="800">{{ popu_tags.15 }}</span></a>
+</div>
 
 {% endblock %}

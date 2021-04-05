@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 {% load static %}
+{% load main_tags %}
+
 
 {% block title %}Blog_It | About{% endblock %}
 
@@ -23,40 +25,106 @@
         </div>
     </div>
 
-    <h2 class="col-12 mb-3" data-aos="fade-right" data-aos-delay="200">Meet the talents...</h2>
+    <h2 class="col-12 py-3" data-aos="fade-right" data-aos-delay="200">Meet the talents...</h2>
     <div class="col-md-4 text-center" data-aos="fade-left" data-aos-delay="200">
         <div class="card mb-3">
             <div class="card-img-top">
-                <img src="/media/images/person_2.jpg" alt="" class="img-fluid">
+                <img src="{{ senior_writer.image.url }}" alt="" class="img-fluid">
             </div>
             <div class="card-body text-center">
-                <h5 class="card-title">Senior Writer</h5>
-                <p>Tomiwa Joseph</p>
+                <h5 class="card-title">{{ senior_writer.position }}</h5>
+                <p>{{ senior_writer.user.first_name }} {{ senior_writer.user.last_name }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-4 text-center" data-aos="fade-down" data-aos-delay="200">
         <div class="card mb-3">
             <div class="card-img-top">
-                <img src="/media/images/person_1.jpg" alt="" class="img-fluid">
+                <img src="{{ assist_senior_writer.image.url }}" alt="" class="img-fluid">
             </div>
             <div class="card-body text-center">
-                <h5 class="card-title">Assistant Senior Writer</h5>
-                <p>Jane Doe</p>
+                <h5 class="card-title">{{ assist_senior_writer.position }}</h5>
+                <p>{{ assist_senior_writer.user.first_name }} {{ assist_senior_writer.user.last_name }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-4 text-center" data-aos="fade-right" data-aos-delay="200">
         <div class="card mb-3">
             <div class="card-img-top">
-                <img src="/media/images/person_6.jpg" alt="" class="img-fluid">
+                <img src="{{ junior_writer.image.url }}" alt="" class="img-fluid">
             </div>
             <div class="card-body text-center">
-                <h5 class="card-title">Junior Writer</h5>
-                <p>John Smith</p>
+                <h5 class="card-title">{{ junior_writer.position }}</h5>
+                <p>{{ junior_writer.user.first_name }} {{ junior_writer.user.last_name }}</p>
             </div>
         </div>
+    </div endfor >
+</div>
+
+{% endblock %}
+
+{% block sidebar %}
+
+<h2 class="cat">Popular Posts</h2>
+<hr>
+<div class="popular-posts">
+    {% for i in popular %}
+    <div class="post-content" data-aos="flip-up" data-aos-delay="500">
+        <div class="post-image">
+            <div>
+                <img src="{{ carousel_src|lookup:i }}" class="img" alt="blog1">
+            </div>
+            <div>
+                <span class="mr-2 text-secondary"><i
+                        class="fa fa-calendar mr-2 mt-2"></i>{{ carousel_dates|lookup:i | date:'F d, Y' }}
+                </span> &bullet;
+                <span class="ml-2 text-secondary"><span class="fa fa-comments"></span>
+                    {{ carou_comments|lookup:i }}</span>
+            </div>
+        </div>
+        <div class="pop-title">
+            <a
+                href="{% url 'blog_detail' carou_year|lookup:i carou_month|lookup:i carou_day|lookup:i carou_slug|lookup:i %}">{{ carousel_titles|lookup:i }}</a>
+        </div>
     </div>
+    {% endfor %}
+</div>
+<h2 class="cat">Newsletter</h2>
+<hr>
+<div class="newsletter">
+    <form action="{% url 'newsletter' %}" method="post">
+        {% csrf_token %}
+        <input type="text" class="input-group mb-2 text-center sub-inp" placeholder="Email" data-aos="fade-down"
+            data-aos-delay="300" name='email'>
+        <button type="submit" class="btn btn-info sub-but" data-aos="fade-up" data-aos-delay="300">Subscribe</button
+            type="submit">
+    </form>
+</div>
+<h2 class="cat">Popular Tags</h2>
+<hr>
+<div class="popular-tags">
+    <a href="{% url 'tag_finder' popu_tags.0 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="100">{{ popu_tags.0 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.1 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="200">{{ popu_tags.1 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.2 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="300">{{ popu_tags.2 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.3 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="400">{{ popu_tags.3 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.4 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="500">{{ popu_tags.4 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.5 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="600">{{ popu_tags.5 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.6 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="700">{{ popu_tags.6 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.7 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="800">{{ popu_tags.7 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.8 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="800">{{ popu_tags.8 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.9 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="800">{{ popu_tags.9 }}</span></a>
+    <a href="{% url 'tag_finder' popu_tags.10 %}"><span class="tag" data-aos="flip-up"
+        data-aos-delay="800">{{ popu_tags.10 }}</span></a>
 </div>
 
 {% endblock %}
