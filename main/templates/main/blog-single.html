@@ -1,6 +1,8 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% load main_tags %}
+{% load crispy_forms_tags %}
+
 
 
 {% block content %}
@@ -50,6 +52,17 @@
         <a class="category" href="{% url 'tag_finder' tags.2 %}">#{{tags.2}}</a></p>
     </div>
 
+    <hr class="mb-4">
+      {% for i in blog %}
+        <span class="author mr-2 text-secondary"><img class="mb-1"
+          src="{{ blog_author_pic }}" alt="" class="img-fluid">
+        </span>
+        <h5 class="card-title">About {{ i.author }}</h5>
+        <a class="category" href="{% url 'view_profile' i.author %}">View profile page</a>
+      {% endfor %}
+    <hr class="mt-4">
+
+
     <div class="pt-5">
       {% with comments.count as total_comments %}
       <h3 class="mb-5">{{ total_comments }} Comment{{ total_comments|pluralize }}</h3>
@@ -64,12 +77,36 @@
             <h3>{{ comment.commenter }}</h3>
             <div class="meta">{{ comment.created | date:'F d, Y' }} at {{ comment.created | date:'P'}}</div>
             <p class="mt-2">{{ comment.body }}</p>
-            <!-- <p><a href="#" class="reply rounded">Reply</a></p> -->
+            {% if comment.post.author == user and not comment.replies.all %}
+            <form action="{% url 'comment' %}" method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <input type="text" class="form-control" name="message">
+              </div>
+              <input type="hidden" name="type" value="reply">
+          <input type="hidden" name="id" value="{{ comment.post.id }}">
+              <input type="hidden" name="parent_id" value="{{ comment.id }}">
+              <button class=" btn btn-info reply rounded" type="submit">Reply</button>
+            </form>
+            {% endif %}
           </div>
+          <ul>
+            {% for reply in comment.replies.all %}
+            <li>
+              <div class="vcard">
+                <img src="{{ reply.commenter.profile.image.url }}" alt="Image placeholder">
+              </div>
+              <div class="comment-body">
+                <h3>{{ reply.commenter }}</h3>
+                <div class="meta">{{ reply.created | date:'F d, Y' }} at {{ comment.created | date:'P'}}</div>
+                <p class="mt-2">{{ reply.body }}</p>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
         </li>
         {% endfor %}
       </ul>
-
 
       <!-- END comment-list -->
       <div class="comment-form-wrap pt-2 pb-3">
@@ -77,6 +114,7 @@
         <h3 class="mb-3">Leave a comment</h3>
         <form action="{% url 'comment' %}" method="POST" class="p-5 bg-light">
           {% csrf_token %}
+          <input type="hidden" name="type" value="comment">
           <input type="hidden" name="id" value="{{ current_id }}">
           <div class="form-group">
             <label for="message">Comment *</label>
