@@ -64,15 +64,17 @@ class Comment(models.Model):
         default=get_default().id,
         on_delete=models.CASCADE,
         related_name='commenter_comments')
-    body = models.TextField()
+    body = models.CharField(max_length=255)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
+    parent = models.ForeignKey('self', null=True, related_name='replies',
+        on_delete=models.CASCADE, blank=True)
     class Meta:
         ordering = ('created',)
         
     def __str__(self):
-        return 'Comment by {} on {}'.format(self.commenter, self.post)
+        return 'Reply by Author on {}'.format(self.post)
 
 class NewsLetterList(models.Model):
     email = models.CharField(max_length=255)
