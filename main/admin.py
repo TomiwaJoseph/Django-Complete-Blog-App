@@ -15,7 +15,7 @@ admin.site.register(NewsLetterList)
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('post', 'commenter', 'created', 'active')
+    list_display = ('post', 'commenter', 'parent', 'active')
     list_filter = ('active', 'created', 'updated')
     search_fields = ('body',)
 
