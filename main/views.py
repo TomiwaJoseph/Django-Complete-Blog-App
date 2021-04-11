@@ -8,12 +8,15 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.contrib import messages
 from users.models import Profile
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 
 
-all_published = Blog.objects.all()[:4]
+
+all_published = Blog.objects.filter(status='published')[:4]
 carou_pics = Blog.objects.all()[:3]
+
 
 carousel_sources = []
 carousel_titles = []
@@ -30,7 +33,7 @@ for i in carou_pics:
     find_all = re.findall(r'<img.*?/>', i.body)
     get_first = find_all[0]
     source = get_first.split()[2][5:-1]
-    carou_comments.append(len(i.comments.filter(active=True)))
+    carou_comments.append(len(i.comments.filter(active=True, parent__isnull=True)))
     carousel_sources.append(source)
     carousel_titles.append(i.title)
     carousel_authors.append(i.author)
@@ -56,7 +59,7 @@ for i in all_published:
     find_all = re.findall(r'<img.*?/>', i.body)
     get_first = find_all[0]
     source = get_first.split()[2][5:-1]
-    pub_comments.append(len(i.comments.filter(active=True)))
+    pub_comments.append(len(i.comments.filter(active=True, parent__isnull=True)))
     pub_header_img.append(source)
     pub_titles.append(i.title)
     pub_authors.append(i.author)
@@ -71,7 +74,7 @@ for i in all_published:
 a = Category.objects.all()
 all_cat_id = [i.id for i in a]
 all_cat_name = [i.name for i in a]
-length = [len(Blog.objects.filter(category=i)) for i in all_cat_id]
+length = [len(Blog.objects.filter(status='published', category=i)) for i in all_cat_id]
 
 blog = Blog.objects.all()
 a = [i.tags.all() for i in blog]
@@ -160,7 +163,7 @@ def blog_detail(request, year, month, day, slug):
         without_tags = [i.split()[2][5:-1] if '<img' in i else i for i in without]
 
     post_comments = get_object_or_404(Blog, slug=slug)
-    comments = post_comments.comments.filter(active=True)
+    comments = post_comments.comments.filter(active=True, parent__isnull=True)
 
     context = {
         'blog': blog, 'header_img': header_img,
@@ -183,7 +186,8 @@ def blog_detail(request, year, month, day, slug):
     return render(request, 'main/blog-single.html', context)
 
 def tag_finder(request, tag):
-    object_list = Blog.objects.all()
+    # object_list = Blog.objects.all()
+    object_list = Blog.objects.filter(status='published')
     tagg = get_object_or_404(Tag, slug=tag)
     object_list = object_list.filter(tags__in=[tagg])
 
@@ -233,7 +237,7 @@ def tag_finder(request, tag):
 def category_finder(request, tag):
     cat = Category.objects.filter(name=tag)
     cat_id = [i.id for i in cat]
-    object_list = Blog.objects.filter(category=cat_id[0])
+    object_list = Blog.objects.filter(status='published', category=cat_id[0])
 
     cat_header_img = []
     cat_titles = []
@@ -280,7 +284,7 @@ def category_finder(request, tag):
 
 def search_it(request):
     get_search = request.POST.get('search_input')
-    object_list = Blog.objects.filter(title__contains=get_search)
+    object_list = Blog.objects.filter(status='published', title__contains=get_search)
 
     search_header_img = []
     search_titles = []
@@ -337,7 +341,8 @@ def newsletter(request):
     }
     return render(request, 'main/newsletter_success.html',context)
 
-class ComposeBlogView(CreateView):
+
+class ComposeBlogView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Blog
     template_name = 'main/compose.html'
 
@@ -348,22 +353,28 @@ class ComposeBlogView(CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False
+
 
 def archive(request, day):
     if day == 'today':
-        cat = Blog.objects.filter(publish__day=timezone.now().day)
+        cat = Blog.objects.filter(status='published', publish__day=timezone.now().day)
 
     if day == 'past-7-days':
         cat = Blog.objects.filter(
-    publish__day__lte=datetime.today().strftime('%d'), 
-    publish__day__gte=int(datetime.today().strftime('%d')) - 7)
+            status='published',
+            publish__day__lte=datetime.today().strftime('%d'), 
+            publish__day__gte=int(datetime.today().strftime('%d')) - 7)
 
 
     if day == 'this-month':
-        cat = Blog.objects.filter(publish__month=timezone.now().month)
+        cat = Blog.objects.filter(status='published', publish__month=timezone.now().month)
 
     if day == 'this-year':
-        cat = Blog.objects.filter(publish__year=timezone.now().year)
+        cat = Blog.objects.filter(status='published', publish__year=timezone.now().year)
 
     pub_header_img = []
     pub_titles = []
@@ -405,18 +416,28 @@ def archive(request, day):
     return render(request, 'main/archive.html',context)
 
 def comment(request):
-    message = request.POST.get('message')
+    current_type = request.POST.get('type')
     current_blog_id = request.POST.get('id')
+    current_comment_id = request.POST.get('parent_id')
+
     post = Blog.objects.filter(id=current_blog_id).first()
 
-    new_comment = Comment(post=post,
-        commenter=request.user, body=message)
-    new_comment.save()
+    if current_type == 'comment':
+        message = request.POST.get('message')
+
+        new_comment = Comment(post=post,
+            commenter=request.user, body=message)
+        new_comment.save()
+    else:
+        message = request.POST.get('message')
+        parent_comment = Comment.objects.get(id=current_comment_id)
+        reply = Comment(post=post, commenter=request.user, body=message, parent=parent_comment)
+        reply.save()
 
     year = post.created.year
     month = post.created.month
     day = post.created.day
     slug = post.slug
-    
+
     return redirect('blog_detail', year=year,
         month=month, day=day, slug=slug)
