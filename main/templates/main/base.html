@@ -22,10 +22,10 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-9 icons">
+                        <a href="https://github.com/TomiwaJoseph"><span class="fa fa-github"></span></a>
                         <a href="#"><span class="fa fa-twitter"></span></a>
                         <a href="#"><span class="fa fa-facebook"></span></a>
                         <a href="#"><span class="fa fa-instagram"></span></a>
-                        <a href="#"><span class="fa fa-youtube-play"></span></a>
                     </div>
                     <div class="col-3">
                         <form action="{% url 'search_it' %}" class="form-inline my-2 my-md-0 search_it" method="POST">
@@ -53,10 +53,12 @@
                             <a class="nav-link active" href="{% url 'index' %}">Home <span
                                     class="sr-only">(current)</span></a>
                         </li>
+                        {% if user.is_staff %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'compose' %}" tabindex="-1" aria-disabled="true">Compose
                                 +</a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'about' %}" tabindex="-1" aria-disabled="true">About</a>
                         </li>
@@ -114,8 +116,9 @@
                     <div class="col-md-4" data-aos="fade-right" data-aos-delay="200">
                         <h3>About Us</h3>
                         <p class="mb-4">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia atque nemo ad modi
-                            officiis iure, autem nulla tenetur repellendus </p>
+                            This blog site informs, educate and entertain you with
+                            mind blowing posts. Feel free to contact us if you want to write
+                            for us.</p>
                     </div>
                     <div class="col-md-4" data-aos="fade-down" data-aos-delay="200">
                         <h3>Newsletter</h3>
