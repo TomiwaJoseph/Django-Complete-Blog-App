@@ -5,10 +5,9 @@ from django.urls import reverse_lazy
 from .forms import SignupForm, UserUpdateForm, AuthorProfileUpdateForm, UserProfileUpdateForm
 from main.views import *
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from main.models import Blog
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 
 
@@ -25,16 +24,17 @@ class UserRegister(CreateView):
         context['all_cat_name'] = all_cat_name
         return context
 
+@login_required
 def profile(request, user_):
     if user_ != request.user.username:
-        raise PermissionDenied
+        return redirect('profile', request.user)
 
     context = {
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'users/profile.html', context)
 
-
+@login_required
 def edit_profile(request):
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
@@ -66,12 +66,11 @@ def edit_profile(request):
     }
     return render(request, 'users/edit_profile.html', context)
 
-
 def author_profile_view(request, user_):
     query = User.objects.filter(is_staff=True)
     all_authors = [i.username for i in query]
     if user_ not in all_authors:
-        raise PermissionDenied
+        return redirect('profile', request.user)
 
     author_details = User.objects.filter(username=user_)
 
