@@ -12,3 +12,9 @@
     <li>EVERY feature works</li>
     <li>...and more</li>
 </ul>
+<h4>To add...</h4>
+<hr>
+<ul>
+    <li>Internalization</li>
+    <li>Dynamic navbar</li>
+</ul>
