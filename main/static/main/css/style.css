@@ -27,6 +27,11 @@ p{
     margin-top: -10px;
 }
 
+.drop:hover{
+    color: #fff;
+    background: lightgray;
+}
+
 nav .nav-item:last-child{
     padding-right: 7em;
 }
@@ -44,11 +49,6 @@ nav .nav-item{
             padding-left: 0px;
         }
     }
-
-.dropdown-item:hover a{
-    background: #1072f2;
-    color: #fff;
-}
 
 .head_it{
     background: #1072f2;
@@ -273,24 +273,7 @@ nav .nav-item{
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* <----------- Comment Style --------------> */
 
 .comment-form-wrap {
     clear: both; }
@@ -336,32 +319,6 @@ nav .nav-item{
           .comment-list li .comment-body .reply:hover {
             color: #1072f2;
             background: #fff; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* <------------   Footer   ---------------> */
 
