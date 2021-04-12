@@ -32,6 +32,7 @@ class Blog(models.Model):
     author = models.ForeignKey(User,
         on_delete=models.CASCADE,
         related_name='blog_posts')
+    blog_views = models.IntegerField(default=0)
     body = RichTextUploadingField(blank=True, null=True)
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
