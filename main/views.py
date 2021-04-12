@@ -11,11 +11,8 @@ from users.models import Profile
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
-
-
-
 all_published = Blog.objects.filter(status='published')[:4]
-carou_pics = Blog.objects.all()[:3]
+carou_pics = Blog.objects.filter(status='published').order_by('-blog_views')[:3]
 
 
 carousel_sources = []
@@ -141,6 +138,7 @@ def about(request):
 
 def blog_detail(request, year, month, day, slug):
     blog = Blog.objects.filter(slug=slug)
+    posts = Blog.objects.get(slug=slug)
     header_img = []
     images_indexes = []
     a = [i.tags.all() for i in blog][0]
@@ -164,6 +162,12 @@ def blog_detail(request, year, month, day, slug):
 
     post_comments = get_object_or_404(Blog, slug=slug)
     comments = post_comments.comments.filter(active=True, parent__isnull=True)
+
+    session_key = 'blog_views_{}'.format(posts.title)
+    if not request.session.get(session_key):
+        posts.blog_views += 1
+        posts.save()
+        request.session[session_key] = True
 
     context = {
         'blog': blog, 'header_img': header_img,
