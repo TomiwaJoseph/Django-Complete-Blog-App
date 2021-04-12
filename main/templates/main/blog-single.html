@@ -230,5 +230,21 @@
   <a href="{% url 'tag_finder' popu_tags.15 %}"><span class="tag" data-aos="flip-up"
       data-aos-delay="800">{{ popu_tags.15 }}</span></a>
 </div>
+<h2 class="cat">Archive</h2>
+<hr>
+<div class="row">
+  <div class="col-md-6" data-aos="fade-down" data-aos-delay="300">
+    <a href="{% url 'archive' 'today' %}" class="btn btn-outline-info archive">Today</a>
+  </div>
+  <div class="col-md-6" data-aos="fade-down" data-aos-delay="300">
+    <a href="{% url 'archive' 'past-7-days' %}" class="btn btn-outline-info archive">Past 7 Days</a>
+  </div>
+  <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+    <a href="{% url 'archive' 'this-month' %}" class="btn btn-outline-info archive">This Month</a>
+  </div>
+  <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+    <a href="{% url 'archive' 'this-year' %}" class="btn btn-outline-info archive">This Year</a>
+  </div>
+</div>
 
 {% endblock %}
