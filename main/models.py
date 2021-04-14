@@ -44,6 +44,7 @@ class Blog(models.Model):
 
     class Meta:
         ordering = ('-publish',)
+        verbose_name = 'Post'
 
     def __str__(self):
         return self.title
@@ -80,8 +81,22 @@ class Comment(models.Model):
     def __str__(self):
         return 'Reply by Author on {}'.format(self.post)
 
+
 class NewsLetterList(models.Model):
     email = models.CharField(max_length=255)
 
     def __str__(self):
         return self.email
+
+
+class WebsiteDetails(models.Model):
+    github = models.CharField(default='', max_length=255, blank=True, null=True)
+    facebook = models.CharField(default='', max_length=255, blank=True, null=True)
+    instagram = models.CharField(default='', max_length=255, blank=True, null=True)
+    twitter = models.CharField(default='', max_length=255, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Blog Website'
+
+    def __str__(self):
+        return 'Blog Websites'
