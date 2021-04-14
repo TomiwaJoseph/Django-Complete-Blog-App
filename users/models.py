@@ -8,6 +8,10 @@ class Profile(models.Model):
     position = models.CharField(default='Reader', max_length=255)
     about = models.TextField(default='Something about the author.')
     image = models.ImageField(default='blog_it.jpg', upload_to='profile_pics')
+    github = models.CharField(default='', max_length=255, blank=True, null=True)
+    facebook = models.CharField(default='', max_length=255, blank=True, null=True)
+    instagram = models.CharField(default='', max_length=255, blank=True, null=True)
+    twitter = models.CharField(default='', max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
