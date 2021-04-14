@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, ListView
-from .models import Blog, Category, Comment, NewsLetterList
+from .models import Blog, Category, Comment, NewsLetterList, WebsiteDetails
 import re
 from taggit.models import Tag
 from datetime import datetime
@@ -77,6 +77,8 @@ blog = Blog.objects.all()
 a = [i.tags.all() for i in blog]
 popu_tags = list(set([j for i in a for j in i]))[:16]
 
+details = WebsiteDetails.objects.get(id=1)
+
 # Create your views here.
 def index(request):
     context = {
@@ -90,7 +92,7 @@ def index(request):
         'carou_day': carou_day, 'carou_slug': carou_slug,
         'length': length, 'all_cat_name': all_cat_name,
         'carou_comments': carou_comments,
-        'pub_comments': pub_comments,
+        'pub_comments': pub_comments, 'details': details,
         'carou_author_pics': carou_author_pics,
         'pub_author_pics': pub_author_pics,
         'popu_tags': popu_tags,
@@ -111,6 +113,7 @@ def contact(request):
         return redirect('contact')
         
     context = {
+        'details': details,
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/contact.html', context)
@@ -128,7 +131,7 @@ def about(request):
         'carou_day': carou_day,
         'carou_slug': carou_slug,
         'carou_comments': carou_comments,
-        'popu_tags': popu_tags,
+        'popu_tags': popu_tags, 'details': details,
         'senior_writer': senior_writer,
         'assist_senior_writer': assist_senior_writer,
         'junior_writer': junior_writer,
@@ -184,7 +187,7 @@ def blog_detail(request, year, month, day, slug):
         'current_id': i.id, 'comments': comments,
         'carou_comments': carou_comments,
         'blog_author_pic': blog_author_pic,
-        'popu_tags': popu_tags,
+        'popu_tags': popu_tags, 'details': details,
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/blog-single.html', context)
@@ -225,11 +228,10 @@ def tag_finder(request, tag):
         'tag_titles': tag_titles,
         'tag_header_img': tag_header_img,
         'tag_authors': tag_authors,
-        'tag_dates': tag_dates,
-        'tag_year': tag_year,
+        'tag_dates': tag_dates, 'tag_year': tag_year,
         'tag_month': tag_month,
         'pub_comments': pub_comments,
-        'tag_day': tag_day,
+        'tag_day': tag_day, 'details': details,
         'tag_author_pics': tag_author_pics,
         'tag_slug': tag_slug,
         'tag_number': range(len(tag_titles)), 'tag': tag,
@@ -273,13 +275,12 @@ def category_finder(request, tag):
         'cat_titles': cat_titles,
         'cat_header_img': cat_header_img,
         'cat_authors': cat_authors,
-        'cat_dates': cat_dates,
-        'cat_year': cat_year,
+        'cat_dates': cat_dates, 'cat_year': cat_year,
         'cat_month': cat_month,
         'pub_comments': pub_comments,
         'cat_day': cat_day,
         'cat_slug_pics': cat_slug_pics,
-        'cat_slug': cat_slug,
+        'cat_slug': cat_slug, 'details': details,
         'cat_number': range(len(cat_titles)), 'tag': tag,
         'length': length, 'all_cat_name': all_cat_name,
         'popu_tags': popu_tags,
@@ -330,7 +331,7 @@ def search_it(request):
         'get_search': get_search,
         'search_number': range(len(search_titles)),
         'length': length, 'all_cat_name': all_cat_name,
-        'popu_tags': popu_tags,
+        'popu_tags': popu_tags, 'details': details,
     }
     return render(request, 'main/search_results.html',context)
 
@@ -340,11 +341,10 @@ def newsletter(request):
     news_.save()
     context = {
         'length': length, 'all_cat_name': all_cat_name,
-        'popu_tags': popu_tags,
+        'popu_tags': popu_tags, 'details': details,
         'get_search': get_search,
     }
     return render(request, 'main/newsletter_success.html',context)
-
 
 class ComposeBlogView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Blog
@@ -361,6 +361,11 @@ class ComposeBlogView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         if self.request.user.is_staff:
             return True
         return False
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['details'] = details
+        return context
 
 
 def archive(request, day):
@@ -414,7 +419,7 @@ def archive(request, day):
         'popu_tags': popu_tags,
         'pub_author_pics': pub_author_pics,
         'pub_comments': pub_comments, 'day': day,
-        'popu_tags': popu_tags,
+        'popu_tags': popu_tags, 'details': details,
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'main/archive.html',context)

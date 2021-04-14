@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.views.generic import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
@@ -12,24 +12,35 @@ from django.contrib.auth import views as auth_views
 
 
 # Create your views here.
-class UserRegister(CreateView):
-    form_class = SignupForm
-    template_name = 'registration/register.html'
-    success_url = reverse_lazy('login')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['length'] = length 
-        context['all_cat_name'] = all_cat_name
-        return context
+def register(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f"Account has been created successfully for {username}. Log in now!")
+            return redirect('login')
+    else:
+        form = SignupForm()
+        
+    context = {
+        'form': form,
+        'length': length, 
+        'all_cat_name': all_cat_name,
+        'details': details,
+    }
+    return render(request, 'registration/register.html', context)
 
 @login_required
 def profile(request, user_):
+    query = User.objects.filter(username=user_).first()
+    user_details = Profile.objects.filter(user=query).first()
+
     if user_ != request.user.username:
         return redirect('profile', request.user)
 
     context = {
+        'details': details, 'user_details': user_details,
         'length': length, 'all_cat_name': all_cat_name,
     }
     return render(request, 'users/profile.html', context)
@@ -58,8 +69,16 @@ def edit_profile(request):
         user_profile_form = UserProfileUpdateForm(instance=request.user.profile)
     
     context = {
+        'carousel_src': carousel_sources, 'carousel_titles': carousel_titles,
+        'carousel_authors': carousel_authors, 'carousel_dates': carousel_dates,
+        'popular': range(len(carousel_authors)-1),
+        'carou_year': carou_year,
+        'carou_month': carou_month,
+        'carou_day': carou_day,
+        'carou_slug': carou_slug,
+        'carou_comments': carou_comments,
         'popu_tags': popu_tags,
-        'user_form': user_form,
+        'user_form': user_form, 'details': details,
         'author_profile_form': author_profile_form,
         'user_profile_form': user_profile_form,
         'length': length, 'all_cat_name': all_cat_name,
@@ -120,3 +139,6 @@ def author_profile_view(request, user_):
         'popu_tags': popu_tags,
     }
     return render(request, 'users/profile_view.html', context)
+
+def know_user(request):
+    return redirect('profile', user_=request.user.username)
