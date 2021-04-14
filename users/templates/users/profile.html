@@ -18,15 +18,31 @@
         </div>
     </div>
     {% if user.is_staff %}
-    <hr>
-    <p>{{ user.profile.about|linebreaks }}</p>
-    <hr>
-    <div class="profile-icons">
-        <a href="#"><span class="fa fa-twitter"></span></a>
-        <a href="#"><span class="fa fa-facebook"></span></a>
-        <a href="#"><span class="fa fa-instagram"></span></a>
-        <a href="#"><span class="fa fa-youtube-play"></span></a>
-    </div>
+        <hr>
+        <p>{{ user.profile.about|linebreaks }}</p>
+        <hr>
+        <div class="profile-icons">
+            {% if user_details.github %}
+                <a href="{{ user_details.github }}" target="blank">
+                    <span class="fa fa-github"></span>
+                </a>
+            {% endif %}
+            {% if user_details.facebook %}
+                <a href="{{ user_details.facebook }}" target="blank">
+                    <span class="fa fa-facebook"></span>
+                </a>
+            {% endif %}
+            {% if user_details.instagram %}
+                <a href="{{ user_details.instagram }}" target="blank">
+                    <span class="fa fa-instagram"></span>
+                </a>
+            {% endif %}
+            {% if user_details.twitter %}
+                <a href="{{ user_details.twitter }}" target="blank">
+                    <span class="fa fa-twitter"></span>
+                </a>
+            {% endif %}
+        </div>
     {% endif %}
 </div>
 

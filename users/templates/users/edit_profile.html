@@ -1,6 +1,7 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load main_tags %}
 
 
 {% block title %}Blog_It | Profile Page{% endblock %}
@@ -26,6 +27,56 @@
 
 {% block sidebar %}
 
+{% if user.is_staff %}
+<h2 class="cat">Popular Posts</h2>
+<hr>
+<div class="popular-posts">
+    {% for i in popular %}
+    <div class="post-content" data-aos="flip-up" data-aos-delay="500">
+        <div class="post-image">
+            <div>
+                <img src="{{ carousel_src|lookup:i }}" class="img" alt="blog1">
+            </div>
+            <div>
+                <span class="mr-2 text-secondary"><i
+                        class="fa fa-calendar mr-2 mt-2"></i>{{ carousel_dates|lookup:i | date:'F d, Y' }}
+                </span> &bullet;
+                <span class="ml-2 text-secondary"><span class="fa fa-comments"></span>
+                    {{ carou_comments|lookup:i }}</span>
+            </div>
+        </div>
+        <div class="pop-title">
+            <a
+                href="{% url 'blog_detail' carou_year|lookup:i carou_month|lookup:i carou_day|lookup:i carou_slug|lookup:i %}">{{ carousel_titles|lookup:i }}</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<h2 class="my-4 cat">Category</h2>
+<hr>
+<div class="categories">
+    <div data-aos="fade-left" data-aos-delay="100">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.0 %}">{{ all_cat_name.0|capfirst }}<span>({{length.0}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="200">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.1 %}">{{ all_cat_name.1|capfirst }}<span>({{length.1}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="300">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.2 %}">{{ all_cat_name.2|capfirst }}<span>({{length.2}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="400">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.3 %}">{{ all_cat_name.3|capfirst }}<span>({{length.3}})</span></a>
+    </div>
+    <div data-aos="fade-left" data-aos-delay="500">
+        <a class="category-items"
+            href="{% url 'category_finder' all_cat_name.4 %}">{{ all_cat_name.4|capfirst }}<span>({{length.4}})</span></a>
+    </div>
+</div>
+{% else %}
 <h2 class="my-4 cat">Category</h2>
 <hr>
 <div class="categories">
@@ -61,23 +112,7 @@
             type="submit">
     </form>
 </div>
-<h2 class="cat">Popular Tags</h2>
-<hr>
-<div class="popular-tags">
-    <a href="{% url 'tag_finder' popu_tags.0 %}"><span class="tag" data-aos="flip-up"
-            data-aos-delay="100">{{ popu_tags.0 }}</span></a>
-    <a href="{% url 'tag_finder' popu_tags.1 %}"><span class="tag" data-aos="flip-up"
-            data-aos-delay="200">{{ popu_tags.1 }}</span></a>
-    <a href="{% url 'tag_finder' popu_tags.2 %}"><span class="tag" data-aos="flip-up"
-            data-aos-delay="300">{{ popu_tags.2 }}</span></a>
-    <a href="{% url 'tag_finder' popu_tags.3 %}"><span class="tag" data-aos="flip-up"
-            data-aos-delay="400">{{ popu_tags.3 }}</span></a>
-    <a href="{% url 'tag_finder' popu_tags.4 %}"><span class="tag" data-aos="flip-up"
-            data-aos-delay="500">{{ popu_tags.4 }}</span></a>
-    <a href="{% url 'tag_finder' popu_tags.5 %}"><span class="tag" data-aos="flip-up"
-            data-aos-delay="600">{{ popu_tags.5 }}</span></a>
-    <a href="{% url 'tag_finder' popu_tags.6 %}"><span class="tag" data-aos="flip-up"
-            data-aos-delay="700">{{ popu_tags.6 }}</span></a>
-</div>
+{% endif %}
+
 
 {% endblock %}

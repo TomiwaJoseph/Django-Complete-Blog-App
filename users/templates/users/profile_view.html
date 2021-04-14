@@ -24,10 +24,26 @@
   <p>{{ i.profile.about|linebreaks }}</p>
   <hr>
   <div class="profile-icons">
-    <a href="#"><span class="fa fa-twitter"></span></a>
-    <a href="#"><span class="fa fa-facebook"></span></a>
-    <a href="#"><span class="fa fa-instagram"></span></a>
-    <a href="#"><span class="fa fa-youtube-play"></span></a>
+    {% if i.profile.github %}
+      <a href="{{ i.profile.github }}" target="blank">
+        <span class="fa fa-github"></span>
+      </a>
+    {% endif %}
+    {% if i.profile.facebook %}
+      <a href="{{ i.profile.facebook }}" target="blank">
+        <span class="fa fa-facebook"></span>
+      </a>
+    {% endif %}
+    {% if i.profile.instagram %}
+      <a href="{{ i.profile.instagram }}" target="blank">
+        <span class="fa fa-instagram"></span>
+      </a>
+    {% endif %}
+    {% if i.profile.twitter %}
+      <a href="{{ i.profile.twitter }}" target="blank">
+        <span class="fa fa-twitter"></span>
+      </a>
+    {% endif %}
   </div>
   {% endfor %}
 </div>
