@@ -67,8 +67,8 @@ nav .nav-item{
     .head_it .icons {
       text-align: left; }
 
-.navbar-nav li a.active,
-.navbar-nav li a:hover{
+.navbar-nav > .active > a,
+.nav-item > a:hover{
     color: #1072f2!important;
 }
 
