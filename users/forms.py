@@ -5,19 +5,12 @@ from .models import Profile
 
 
 class SignupForm(UserCreationForm):
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control'}))
+    email = forms.EmailField()
     
     class Meta:
         model = User
         fields = ('username','email','password1','password2')
-
-    def __init__(self, *args, **kwargs):
-        super(SignupForm, self).__init__(*args, **kwargs)
-
-        self.fields['username'].widget.attrs['class'] = 'form-control'
-        self.fields['password1'].widget.attrs['class'] = 'form-control'
-        self.fields['password2'].widget.attrs['class'] = 'form-control'
-
+        
 
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField()
@@ -25,10 +18,13 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ('username','email')
 
+
 class AuthorProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('image', 'position', 'about')
+        fields = ('image', 'position', 'about',
+            'github', 'facebook', 'instagram', 'twitter')
+
 
 class UserProfileUpdateForm(forms.ModelForm):
     class Meta:
