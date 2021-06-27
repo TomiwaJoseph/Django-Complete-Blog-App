@@ -1,14 +1,10 @@
-from django.shortcuts import render, redirect, reverse
-from django.views.generic import CreateView
-from django.contrib.auth.forms import UserCreationForm
-from django.urls import reverse_lazy
+from django.shortcuts import render, redirect
 from .forms import SignupForm, UserUpdateForm, AuthorProfileUpdateForm, UserProfileUpdateForm
 from main.views import *
 from django.contrib import messages
 from django.contrib.auth.models import User
 from main.models import Blog
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import views as auth_views
 
 
 # Create your views here.
