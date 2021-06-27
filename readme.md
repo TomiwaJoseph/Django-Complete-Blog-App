@@ -11,7 +11,7 @@
     <li>EVERY feature works!</li>
     <li>...and more</li>
 </ul>
-<h2>Features of add...</h2>
+<h2>Features to add...</h2>
 <ul>
     <li>Internationalization</li>
 </ul>
